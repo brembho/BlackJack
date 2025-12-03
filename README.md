@@ -1,55 +1,52 @@
-# BlackJack
+# ♠️ Multiplayer PHP Blackjack
 
-Studente A: "Il Backend Manager"
-Focus: Database, Autenticazione, Sicurezza e File.
+Un'applicazione web completa per giocare a Blackjack in multiplayer, sviluppata come progetto scolastico. Il sistema utilizza **PHP OOP**, **MySQL** per la persistenza dei dati e **AJAX** per l'aggiornamento in tempo reale del tavolo di gioco.
 
-    Compiti:
+## 📋 Requisiti del Progetto
 
-    Creare il Database e la connessione PHP (Database.php).
+Il progetto soddisfa i seguenti requisiti tecnici:
+- **Architettura Modulare:** Uso estensivo di classi e inclusione file (`require`, OOP).
+- **Autenticazione Sicura:** Login e Registrazione con hashing delle password (`password_hash`).
+- **Persistenza Dati:** Utilizzo di Database MySQL Relazionale.
+- **Gestione Stato:** Uso di `$_SESSION` per l'utente e Database per lo stato del tavolo.
+- **File System:** Sistema di logging su file `.txt` per tracciare gli eventi.
+- **Multiplayer:** Sistema a polling (AJAX) per permettere a più utenti di giocare allo stesso tavolo.
 
-    Creare il sistema di Registrazione (con hash della password).
+---
 
-    Creare il sistema di Login e gestione delle Sessioni.
+## 🛠️ Tech Stack
 
-    Gestire il requisito File (creare il sistema di log su file .txt).
+* **Backend:** PHP 8.x (Object Oriented Programming)
+* **Database:** MySQL / MariaDB
+* **Frontend:** HTML5, CSS3, Vanilla JavaScript (Fetch API)
+* **Hosting:** Compatibile con Apache (es. Altervista, XAMPP)
 
-    Gestire l'aggiornamento dei crediti nel DB a fine partita.
+---
 
-Studente B: "Il Game Developer"
-Focus: Logica del Blackjack, Classi OOP, Interfaccia.
+## 📂 Struttura del Progetto
 
-    Compiti:
-
-    Creare la classe Mazzo (Deck.php - array di carte, mescolare, pescare).
-
-    Creare la logica del punteggio (Asso vale 1 o 11, figure valgono 10).
-
-    Disegnare l'interfaccia grafica (HTML/CSS) del tavolo da gioco.
-
-    Gestire i pulsanti "Carta" e "Sto" e mostrare le carte a schermo.
-
-
-
-
-
-
-
+```text
 /blackjack-project
+├── /api                  # Endpoint JSON per AJAX
+│   ├── get_state.php     # Restituisce lo stato del tavolo (polling)
+│   └── do_action.php     # Gestisce le mosse (Hit/Stand)
 ├── /assets
-│   ├── /css (style.css)
-│   └── /img (immagini delle carte)
-├── /classes              <-- Qui usate la OOP
-│   ├── Database.php      (Gestione connessione DB)
-│   ├── User.php          (Login, Registrazione, Hash)
-│   ├── Deck.php          (Mazzo di carte, mischia, pesca)
-│   └── Game.php          (Logica del blackjack: punteggi, vittoria/sconfitta)
+│   ├── /css/style.css    # Stili del tavolo e della UI
+│   ├── /img/cards/       # Immagini delle carte (es. 10H.png)
+│   └── /js/game.js       # Logica Frontend e chiamate AJAX
+├── /classes              # Core Logic (OOP)
+│   ├── Database.php      # Singleton Pattern per connessione DB
+│   ├── User.php          # Gestione Auth e Crediti
+│   ├── Table.php         # Gestione Lobby e Posti
+│   ├── Deck.php          # Generazione e gestione mazzo
+│   └── Game.php          # Regole Blackjack (Punteggi, Dealer AI)
 ├── /includes
-│   ├── config.php        (Credenziali DB)
-│   └── functions.php     (Funzioni generali)
-├── /logs                 <-- Per il requisito "file"
-│   └── game_log.txt      (Salviamo qui un log testuale delle partite)
-├── index.php             (Home / Login form)
-├── dashboard.php         (Pagina principale dopo il login)
-├── tavolo.php            (Il gioco vero e proprio)
-├── logout.php
-└── install.sql           (File per creare il DB)
+│   ├── config.php        # Credenziali Database
+│   └── functions.php     # Helper functions
+├── /logs
+│   └── game_log.txt      # Log testuale degli eventi
+├── index.php             # Login Page
+├── register.php          # Sign-up Page
+├── lobby.php             # Lista tavoli attivi
+├── tavolo.php            # Main Game Interface
+└── install.sql           # Script importazione Database
