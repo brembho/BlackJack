@@ -2,7 +2,7 @@
 
 require_once "classes/user.php";
 $user = new user();
-$message;
+$message = "";
 if (isset($_POST["username"]) && isset($_POST["password"])) {
 
 
