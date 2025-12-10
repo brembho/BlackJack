@@ -1,5 +1,5 @@
 <?php
-
+require_once "includes/config.php";
 require_once "classes/user.php";
 $user = new user();
 $message = "";
@@ -7,7 +7,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
 
     if($user->Autenticazione(trim($_POST['username']), trim($_POST['password']))){
-        header("Location: index.php");
+        header("Location: lobby.php");
     }
     else{
         $message ="Credenzili errate o inesistenti";
@@ -47,7 +47,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             <button type="submit">Avanti</button>
         </form>
         
-        <p>Non hai un account? <a href="register.php">Accedi qui</a></p>
+        <p>Non hai un account? <a href="register.php">Regustrati qui</a></p>
     </div>
     
 </body>

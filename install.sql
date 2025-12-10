@@ -1,3 +1,4 @@
+
 -- 1. Tabella Utenti
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
