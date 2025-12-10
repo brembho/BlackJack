@@ -30,7 +30,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             $stmt = $conn->prepare($sql);
             if ($stmt->execute([':user' => $username, ':pass' => $passHash])) {
                 
-                header("Location: index.php");
+                header("Location: login.php");
                 exit();
             } else {
                 $message = "Errore nel salvataggio.";
@@ -68,7 +68,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             <button type="submit">Registrati</button>
         </form>
         
-        <p>Hai già un account? <a href="index.php">Accedi qui</a></p>
+        <p>Hai già un account? <a href="login.php">Accedi qui</a></p>
     </div>
 </body>
 </html>
