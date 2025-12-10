@@ -65,7 +65,15 @@ Brambilla:
 
     2. Cartella /assets/js
 
-    [ ] game.js:
+    [ ] game.js: // Esempio di utilizzo (parte dello Studente B) fetch('api/get_state.php?table_id=1')
+      .then(response => response.json()) // Converte la risposta in oggetto JS
+      .then(data => {
+          console.log(data); 
+          // Qui B scriverà il codice per aggiornare le immagini:
+          // data.players.forEach(player => { ... disegna carte ... })
+      });
+
+      
 
     Usa setInterval per chiamare api/get_state.php ogni 2 secondi.
 
