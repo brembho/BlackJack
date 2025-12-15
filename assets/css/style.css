@@ -1,10 +1,12 @@
-/* --- 1. RESET & VARIABILI --- */
+/* =========================================
+   1. VARIABILI E RESET GENERALE
+   ========================================= */
 :root {
-    --table-green: #2e7d32;   /* Verde base */
-    --table-dark: #1b5e20;    /* Verde scuro per sfumature */
-    --felt-texture: #388e3c;  /* Colore per effetto panno */
-    --gold: #ffc107;          /* Colore Oro per vincite/titoli */
-    --red-danger: #d32f2f;    /* Rosso per pulsante "Sto" */
+    --table-green: #2e7d32;   /* Verde classico */
+    --table-dark: #1b5e20;    /* Verde scuro (sfumature) */
+    --gold: #ffc107;          /* Oro (Vincite, Titoli) */
+    --red-danger: #d32f2f;    /* Rosso (Errori, Button Sto) */
+    --text-color: #ffffff;
     --card-shadow: 2px 4px 8px rgba(0,0,0,0.6);
 }
 
@@ -12,176 +14,252 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif; /* Semplice e pulito */
 }
 
-/* --- 2. SFONDO TAVOLO (BODY) --- */
 body {
-    /* Gradiente radiale per dare l'effetto luce sul tavolo */
+    /* Sfondo radiale: sembra una luce puntata sul tavolo verde */
     background: radial-gradient(circle, var(--table-green) 0%, var(--table-dark) 90%);
-    color: white;
+    color: var(--text-color);
+    font-family: 'Arial', sans-serif; /* O un font Google se preferisci */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; <-- Tolto per permettere lo scroll se serve */
 }
 
-/* --- 3. LOGIN & REGISTRAZIONE (Form) --- */
+a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: 0.3s;
+}
+a:hover { color: white; }
+
+/* =========================================
+   2. CONTENITORI (Login, Register, Lobby)
+   ========================================= */
 .login-container {
-    background: rgba(0, 0, 0, 0.6); /* Sfondo semitrasparente */
+    background: rgba(0, 0, 0, 0.6); /* Nero trasparente */
     padding: 40px;
     border-radius: 15px;
     border: 2px solid var(--gold);
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    width: 100%;
-    max-width: 400px;
+    width: 90%;
+    max-width: 450px;
+    margin-top: 50px; /* Spazio dall'alto */
+    backdrop-filter: blur(5px); /* Effetto vetro */
 }
 
-.login-container h1 {
+/* Titoli */
+h1 {
     color: var(--gold);
+    font-family: 'Georgia', serif;
     margin-bottom: 20px;
-    font-family: 'Georgia', serif; /* Font più elegante per il titolo */
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
+/* Input Form */
 input[type="text"], 
 input[type="password"] {
     width: 100%;
     padding: 12px;
-    margin: 10px 0;
+    margin: 10px 0 20px 0;
     border-radius: 5px;
     border: none;
     background: rgba(255, 255, 255, 0.9);
     font-size: 16px;
 }
 
+/* Bottoni Generici */
 button {
     cursor: pointer;
     padding: 12px 24px;
     border-radius: 30px;
     font-weight: bold;
     font-size: 16px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
     border: none;
-    margin-top: 10px;
-}
-
-/* Bottone generico (Login/Conferma) */
-button[type="submit"] {
-    background: var(--gold);
-    color: #333;
     width: 100%;
     text-transform: uppercase;
 }
 
+button[type="submit"] {
+    background: var(--gold);
+    color: #000;
+}
+
 button:hover {
-    transform: scale(1.05); /* Effetto ingrandimento */
+    transform: scale(1.05);
     box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
 }
 
-a {
-    color: var(--gold);
-    text-decoration: none;
-    font-size: 0.9rem;
+/* =========================================
+   3. STILI DELLA LOBBY (User Bar & Liste)
+   ========================================= */
+
+/* Barra utente in alto */
+.user-bar {
+    width: 100%;
+    padding: 15px 30px;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--gold);
+    margin-bottom: 20px;
 }
 
-/* --- 4. TAVOLO DA GIOCO (Layout Multiplayer) --- */
+.user-info {
+    font-size: 1.1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.credits-box {
+    background: var(--table-dark);
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-weight: bold;
+}
+
+.btn-logout {
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+.btn-logout:hover { background: #ff6b6b; color: white; }
+
+/* Lista Tavoli */
+.tables-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.table-item {
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid var(--table-green);
+}
+
+.table-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.table-id { font-weight: bold; color: var(--gold); display: block; }
+.table-players { font-size: 0.85rem; color: #ccc; }
+
+.btn-join {
+    background: var(--table-green);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 1px solid #4caf50;
+}
+.btn-join:hover { background: #4caf50; }
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 20px 0;
+}
+
+/* =========================================
+   4. TAVOLO DA GIOCO (Game Interface)
+   ========================================= */
 .game-table {
-    width: 90%;
+    width: 95%;
     max-width: 1200px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: space-between;
-    height: 80vh;
-    position: relative;
+    height: 80vh; /* Occupa quasi tutto lo schermo */
+    padding: 20px 0;
 }
 
-/* Area del Banco (In alto) */
+/* Area Dealer (In alto) */
 .dealer-area {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
 }
 
-/* Griglia per i giocatori (In basso) */
+/* Griglia Giocatori (In basso) */
 .players-grid {
     display: flex;
     justify-content: center;
-    gap: 40px; /* Spazio tra i giocatori */
+    gap: 20px;
     flex-wrap: wrap;
-    width: 100%;
+    align-items: flex-end;
 }
 
-/* Singola postazione giocatore */
 .player-seat {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0,0,0,0.4);
     padding: 15px;
     border-radius: 10px;
+    min-width: 180px;
     text-align: center;
-    min-width: 200px;
-    border: 1px dashed rgba(255,255,255,0.2); /* Bordo tratteggiato segnaposto */
+    border: 1px solid transparent;
 }
 
-/* Evidenzia il giocatore di turno */
-.player-seat.active-turn {
-    border: 2px solid var(--gold);
-    box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+/* Evidenzia chi deve muovere */
+.active-turn {
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
 }
 
-/* --- 5. LE CARTE --- */
+/* Carte */
 .hand {
     display: flex;
     justify-content: center;
+    height: 100px;
     margin: 10px 0;
-    height: 120px; /* Altezza fissa per evitare salti */
 }
 
 .card {
-    width: 80px;  /* Larghezza carta */
-    height: 115px; /* Altezza carta */
-    background-color: white;
-    border-radius: 6px;
+    width: 70px;
+    height: 100px;
+    background: white;
+    border-radius: 5px;
     box-shadow: var(--card-shadow);
-    margin-left: -40px; /* Sovrapposizione "a ventaglio" */
-    transition: transform 0.3s ease;
-    
-    /* Se usate immagini vere: */
-    object-fit: cover; 
+    margin-left: -35px; /* Sovrapposizione */
+    transition: transform 0.2s;
+    /* Se usi immagini: object-fit: cover; */
 }
+.card:first-child { margin-left: 0; }
+.card:hover { transform: translateY(-10px); z-index: 10; }
 
-/* La prima carta non deve avere margine negativo */
-.card:first-child {
-    margin-left: 0;
-}
-
-/* Effetto hover sulle carte */
-.card:hover {
-    transform: translateY(-10px); /* La carta si alza un po' */
-    z-index: 10;
-}
-
-/* --- 6. AZIONI DI GIOCO (Pulsanti) --- */
+/* Bottoni Azione (Hit / Stand) */
 .actions-bar {
     display: flex;
-    gap: 15px;
+    gap: 10px;
+    justify-content: center;
     margin-top: 10px;
 }
 
-.btn-hit {
-    background: #4CAF50; /* Verde brillante */
-    color: white;
-    border: 2px solid #fff;
-}
+.btn-hit { background: #2196f3; color: white; width: auto; }
+.btn-stand { background: var(--red-danger); color: white; width: auto; }
 
-.btn-stand {
-    background: var(--red-danger);
-    color: white;
-    border: 2px solid #fff;
-}
-
-/*
+/* Messaggi di errore rossi */
+.error-msg {
+    color: #ff6b6b;
+    background: rgba(0,0,0,0.5);
+    padding: 5px;
+    border-radius: 4px;

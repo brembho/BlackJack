@@ -1,43 +1,24 @@
 <?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once "includes/config.php";
-require_once "classes/Database.php"; 
+require_once "classes/user.php";
 
 $message = "";
 
 if (isset($_POST["username"]) && isset($_POST["password"])) {
+    $user = new User();
     
-    $db = new Database();
-    $conn = $db->getConnection();
 
-    $username = trim($_POST["username"]);
-    $password = $_POST["password"];
-
-   
-    $checkSql = "SELECT id FROM users WHERE username = :username";
-    $stmt = $conn->prepare($checkSql);
-    $stmt->execute([':username' => $username]);
-    
-    if ($stmt->fetch()) {
-        $message = "Username già in uso. Scegline un altro.";
-    } else {
-
-        $passHash = password_hash($password, PASSWORD_DEFAULT);
-
-   
-        $sql = "INSERT INTO users (username, password) VALUES (:user, :pass)";
-        
-        try {
-            $stmt = $conn->prepare($sql);
-            if ($stmt->execute([':user' => $username, ':pass' => $passHash])) {
-                
-                header("Location: login.php");
-                exit();
-            } else {
-                $message = "Errore nel salvataggio.";
-            }
-        } catch (PDOException $e) {
-            $message = "Errore Database: " . $e->getMessage();
-        }
+    if($user->Autenticazione(trim($_POST['username']), trim($_POST['password']))){
+        header("Location: lobby.php");
+        exit(); 
+    }
+    else{
+        $message = "Credenziali errate o inesistenti.";
     }
 }
 ?>
@@ -47,28 +28,39 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blackjack - Registrazione</title>
+    <title>Login - Blackjack</title>
+    
     <link rel="stylesheet" href="assets/css/style.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="login-container">
-        <h1>Registrazione Blackjack</h1>
+
+  <div class="login-container">
+        <div style="font-size: 3rem; margin-bottom: 10px;">♠️</div>
+        <h1>Blackjack Login</h1>
 
         <?php if ($message): ?>
-            <p style="color: red; font-weight: bold;"><?php echo $message; ?></p>
+            <div style="background: rgba(211, 47, 47, 0.8); color: white; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                <?php echo $message; ?>
+            </div>
         <?php endif; ?>
 
         <form method="POST" action="">
-            <label>Username:</label><br>
-            <input type="text" name="username" required><br><br>
+            <div style="text-align: left; margin-bottom: 5px; color: #ffc107; font-weight: bold;">Username</div>
+            <input type="text" name="username" placeholder="Inserisci il tuo nome" required>
 
-            <label>Password:</label><br>
-            <input type="password" name="password" required><br><br>
+            <div style="text-align: left; margin-bottom: 5px; color: #ffc107; font-weight: bold;">Password</div>
+            <input type="password" name="password" placeholder="Inserisci la password" required>
 
-            <button type="submit">Registrati</button>
+            <button type="submit">ENTRA AL TAVOLO</button>
         </form>
         
-        <p>Hai già un account? <a href="login.php">Accedi qui</a></p>
+        <p style="margin-top: 20px;">
+            Non hai ancora un account?<br>
+            <a href="register.php" style="font-weight: bold; text-decoration: underline;">Registrati qui</a>
+        </p>
     </div>
+    
 </body>
 </html>

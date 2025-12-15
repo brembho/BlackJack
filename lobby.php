@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'classes/TableManager.php';
+require_once "includes/system_logger.php";
 
 // Se non sei loggato, torna al login
 if (!isset($_SESSION['user_id'])) {
