@@ -3,7 +3,6 @@ session_start();
 require_once 'classes/TableManager.php';
 require_once "includes/system_logger.php";
 
-// Se non sei loggato, torna al login
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
@@ -11,15 +10,13 @@ if (!isset($_SESSION['user_id'])) {
 
 $tm = new TableManager();
 
-// LOGICA: Se premo "Crea Tavolo"
 if (isset($_POST['create_btn'])) {
     $newTableId = $tm->createTable($_SESSION['user_id']);
-    // Vai subito al tavolo
+
     header("Location: tavolo.php?table_id=" . $newTableId);
     exit();
 }
 
-// LOGICA: Se premo "Unisciti" su un tavolo esistente
 if (isset($_GET['join_id'])) {
     $tableId = $_GET['join_id'];
     $tm->joinTable($tableId, $_SESSION['user_id']);
@@ -27,7 +24,6 @@ if (isset($_GET['join_id'])) {
     exit();
 }
 
-// Recupera la lista dei tavoli per disegnarli
 $tavoli = $tm->getOpenTables();
 ?>
 
