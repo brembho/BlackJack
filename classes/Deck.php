@@ -24,15 +24,18 @@ class Deck {
         }
         return array_pop($this->cards);
     }
+
     //numero carte rimaste
     public function remainingCards() {
         return count($this->cards);
     }
+
     //restituisce lo stato attuale del mazzo sotto forma di array di carte
     //per salvare il mazzo nel DB
     public function getCards() {
         return $this->cards;
     }
+    
     //carica il mazzo contenuto nel DB
     //permette di mantenere lo stato del mazzo tra richieste AJAX dei giocatori
     public function loadFromArray($array) {

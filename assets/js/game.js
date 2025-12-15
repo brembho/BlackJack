@@ -15,7 +15,7 @@ function updateCards(cardsDiv, cardsArray) {
         const img = document.createElement('img');
         img.src = `assets/img/cards/${card}.png`;
         img.alt = card;
-        img.classList.add('card-img'); //stile in CSS
+        img.classList.add('card-img');
         cardsDiv.appendChild(img);
     });
 }
