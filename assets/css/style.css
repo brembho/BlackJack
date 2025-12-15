@@ -1,13 +1,16 @@
 /* =========================================
-   1. VARIABILI E RESET GENERALE
+   1. VARIABILI & RESETS (THEME: 8-BIT)
    ========================================= */
 :root {
-    --table-green: #2e7d32;   /* Verde classico */
-    --table-dark: #1b5e20;    /* Verde scuro (sfumature) */
-    --gold: #ffc107;          /* Oro (Vincite, Titoli) */
-    --red-danger: #d32f2f;    /* Rosso (Errori, Button Sto) */
-    --text-color: #ffffff;
-    --card-shadow: 2px 4px 8px rgba(0,0,0,0.6);
+    --bg-green: #006400;      /* Verde scuro piatto */
+    --pixel-gold: #ffcc00;    /* Oro pixel */
+    --pixel-white: #ffffff;
+    --pixel-black: #212529;
+    --pixel-red: #cc0000;
+    --pixel-blue: #209cee;
+    
+    /* Ombre "Dure" per effetto 3D senza sfocatura */
+    --hard-shadow: 4px 4px 0px #000; 
 }
 
 * {
@@ -17,191 +20,199 @@
 }
 
 body {
-    /* Sfondo radiale: sembra una luce puntata sul tavolo verde */
-    background: radial-gradient(circle, var(--table-green) 0%, var(--table-dark) 90%);
-    color: var(--text-color);
-    font-family: 'Arial', sans-serif; /* O un font Google se preferisci */
+    /* Font Pixelato per tutto il sito */
+    font-family: 'Press Start 2P', cursive; 
+    
+    /* Sfondo a quadretti (Checkerboard) per effetto retrò */
+    background-color: var(--bg-green);
+    background-image: 
+        linear-gradient(45deg, #004d00 25%, transparent 25%, transparent 75%, #004d00 75%, #004d00),
+        linear-gradient(45deg, #004d00 25%, transparent 25%, transparent 75%, #004d00 75%, #004d00);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    
+    color: var(--pixel-white);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: center; <-- Tolto per permettere lo scroll se serve */
+    line-height: 1.5; /* Migliora leggibilità del font pixel */
 }
 
 a {
-    color: var(--gold);
+    color: var(--pixel-gold);
     text-decoration: none;
-    transition: 0.3s;
+    border-bottom: 2px dashed var(--pixel-gold); /* Sottolineatura tratteggiata */
 }
-a:hover { color: white; }
+a:hover {
+    background: var(--pixel-gold);
+    color: black;
+}
 
 /* =========================================
-   2. CONTENITORI (Login, Register, Lobby)
+   2. UI COMPONENTI PIXELOSI
    ========================================= */
-.login-container {
-    background: rgba(0, 0, 0, 0.6); /* Nero trasparente */
-    padding: 40px;
-    border-radius: 15px;
-    border: 2px solid var(--gold);
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+
+/* Il contenitore principale (sembra una finestra di dialogo RPG) */
+.login-container, .lobby-container {
+    background: var(--pixel-black);
+    border: 4px solid var(--pixel-white);
+    padding: 30px;
     width: 90%;
-    max-width: 450px;
-    margin-top: 50px; /* Spazio dall'alto */
-    backdrop-filter: blur(5px); /* Effetto vetro */
+    max-width: 500px;
+    margin-top: 40px;
+    box-shadow: var(--hard-shadow);
+    text-align: center;
+    image-rendering: pixelated;
+    position: relative;
 }
 
 /* Titoli */
 h1 {
-    color: var(--gold);
-    font-family: 'Georgia', serif;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    color: var(--pixel-gold);
+    font-size: 1.5rem; /* Il font pixel è grande di suo */
+    margin-bottom: 30px;
+    text-shadow: 4px 4px 0 #000;
+    line-height: 1.8;
 }
 
-/* Input Form */
+/* INPUT TEXT (Stile console) */
 input[type="text"], 
 input[type="password"] {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0 20px 0;
-    border-radius: 5px;
-    border: none;
-    background: rgba(255, 255, 255, 0.9);
-    font-size: 16px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background: #fff;
+    border: 4px solid #000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    color: #000;
+    outline: none;
+    box-shadow: inset 4px 4px 0px #ccc; /* Ombra interna */
 }
 
-/* Bottoni Generici */
-button {
+input:focus {
+    background: #e0f7fa;
+}
+
+/* BOTTONI (Effetto pulsante Arcade) */
+button, .btn-join, .btn-gold-big, .btn-logout {
+    font-family: 'Press Start 2P', cursive;
     cursor: pointer;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: all 0.2s;
-    border: none;
-    width: 100%;
+    padding: 15px 20px;
+    border: 4px solid #000;
+    font-size: 0.8rem;
     text-transform: uppercase;
+    display: inline-block;
+    position: relative;
+    box-shadow: var(--hard-shadow); /* Niente sfocatura! */
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
 }
 
-button[type="submit"] {
-    background: var(--gold);
+/* Colori specifici bottoni */
+button[type="submit"], .btn-gold-big {
+    background: var(--pixel-gold);
     color: #000;
 }
 
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
+/* Effetto pressione bottone */
+button:active, .btn-join:active {
+    transform: translate(4px, 4px); /* Si sposta giù a destra */
+    box-shadow: none; /* L'ombra sparisce per sembrare premuto */
 }
 
 /* =========================================
-   3. STILI DELLA LOBBY (User Bar & Liste)
+   3. LOBBY & LISTE
    ========================================= */
 
-/* Barra utente in alto */
 .user-bar {
     width: 100%;
-    padding: 15px 30px;
-    background: rgba(0, 0, 0, 0.8);
+    background: var(--pixel-black);
+    border-bottom: 4px solid var(--pixel-white);
+    padding: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid var(--gold);
-    margin-bottom: 20px;
-}
-
-.user-info {
-    font-size: 1.1rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-size: 0.7rem;
 }
 
 .credits-box {
-    background: var(--table-dark);
-    padding: 5px 15px;
-    border-radius: 20px;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-weight: bold;
+    color: var(--pixel-gold);
+    border: 2px solid var(--pixel-gold);
+    padding: 5px 10px;
+    background: #000;
 }
 
 .btn-logout {
-    color: #ff6b6b;
-    border: 1px solid #ff6b6b;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    background: var(--pixel-red);
+    color: white;
+    width: auto;
+    font-size: 0.6rem;
+    padding: 10px;
 }
-.btn-logout:hover { background: #ff6b6b; color: white; }
 
-/* Lista Tavoli */
 .tables-list {
-    max-height: 300px;
-    overflow-y: auto;
     margin-top: 20px;
     text-align: left;
+    height: 300px;
+    overflow-y: auto;
+    border: 2px solid #333;
+    padding: 10px;
+    background: #000;
 }
 
 .table-item {
-    background: rgba(255, 255, 255, 0.1);
-    margin-bottom: 10px;
+    background: #333;
+    margin-bottom: 15px;
     padding: 15px;
-    border-radius: 10px;
+    border: 2px solid var(--pixel-white);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-left: 4px solid var(--table-green);
+    font-size: 0.6rem;
 }
 
-.table-item:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.table-id { font-weight: bold; color: var(--gold); display: block; }
-.table-players { font-size: 0.85rem; color: #ccc; }
+.table-id { color: var(--pixel-gold); display: block; margin-bottom: 5px;}
 
 .btn-join {
-    background: var(--table-green);
+    background: var(--pixel-blue);
     color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    border: 1px solid #4caf50;
+    width: auto;
+    padding: 10px;
+    font-size: 0.6rem;
+    text-decoration: none;
+    border-bottom: none;
 }
-.btn-join:hover { background: #4caf50; }
 
-.divider {
-    border: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-    margin: 20px 0;
-}
+/* Scrollbar personalizzata pixelosa (Webkit) */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(--pixel-gold); border: 2px solid #000; }
 
 /* =========================================
-   4. TAVOLO DA GIOCO (Game Interface)
+   4. TAVOLO DA GIOCO (GAMEPLAY)
    ========================================= */
+
 .game-table {
     width: 95%;
-    max-width: 1200px;
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 80vh; /* Occupa quasi tutto lo schermo */
+    height: 85vh;
     padding: 20px 0;
 }
 
-/* Area Dealer (In alto) */
 .dealer-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border: 4px dashed rgba(255,255,255,0.2);
+    text-align: center;
 }
 
-/* Griglia Giocatori (In basso) */
+/* Griglia giocatori */
 .players-grid {
     display: flex;
     justify-content: center;
@@ -211,55 +222,75 @@ button:hover {
 }
 
 .player-seat {
-    background: rgba(0,0,0,0.4);
-    padding: 15px;
-    border-radius: 10px;
+    background: var(--pixel-black);
+    padding: 10px;
+    border: 4px solid #fff;
     min-width: 180px;
     text-align: center;
-    border: 1px solid transparent;
+    position: relative;
+    box-shadow: var(--hard-shadow);
 }
 
-/* Evidenzia chi deve muovere */
+/* Evidenzia turno attivo */
 .active-turn {
-    border-color: var(--gold);
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+    border-color: var(--pixel-gold);
+    animation: blinkBorder 1s infinite;
 }
 
-/* Carte */
+@keyframes blinkBorder {
+    0% { border-color: var(--pixel-gold); }
+    50% { border-color: #fff; }
+    100% { border-color: var(--pixel-gold); }
+}
+
+/* CARTE PIXELOSE */
 .hand {
     display: flex;
     justify-content: center;
-    height: 100px;
-    margin: 10px 0;
+    height: 90px;
+    margin: 15px 0;
 }
 
 .card {
-    width: 70px;
-    height: 100px;
+    width: 60px;
+    height: 85px;
     background: white;
-    border-radius: 5px;
-    box-shadow: var(--card-shadow);
-    margin-left: -35px; /* Sovrapposizione */
-    transition: transform 0.2s;
-    /* Se usi immagini: object-fit: cover; */
+    border: 2px solid #000;
+    border-radius: 0; /* IMPORTANTE: Niente curve! */
+    margin-left: -30px;
+    box-shadow: 4px 4px 0 #000; /* Ombra dura */
+    
+    /* Se usi immagini, falle sembrare pixelose */
+    image-rendering: pixelated; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    color: black;
+    font-weight: bold;
 }
 .card:first-child { margin-left: 0; }
-.card:hover { transform: translateY(-10px); z-index: 10; }
+.card:hover { transform: translateY(-8px); }
 
-/* Bottoni Azione (Hit / Stand) */
+/* Barra Azioni */
 .actions-bar {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
-.btn-hit { background: #2196f3; color: white; width: auto; }
-.btn-stand { background: var(--red-danger); color: white; width: auto; }
+.btn-hit { background: var(--pixel-blue); color: white; width: auto; }
+.btn-stand { background: var(--pixel-red); color: white; width: auto; }
 
-/* Messaggi di errore rossi */
-.error-msg {
-    color: #ff6b6b;
-    background: rgba(0,0,0,0.5);
+/* Badge punteggi */
+.score-badge {
+    background: #000;
+    color: var(--pixel-gold);
     padding: 5px;
-    border-radius: 4px;
+    border: 2px solid var(--pixel-white);
+    font-size: 0.6rem;
+    margin-top: 5px;
+    display: inline-block;
+}

@@ -1,7 +1,7 @@
 <?php
 
 function systemLog($message) {
-    $logFile = 'game_log.txt';
+    $logFile = 'logs/game_log.txt';
 
 
     $timestamp = date("Y-m-d H:i:s"); 

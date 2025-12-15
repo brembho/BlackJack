@@ -1,30 +1,25 @@
 <?php
-// 1. Includiamo i file fondamentali
-// config.php avvia la sessione in modo sicuro (come abbiamo corretto prima)
+// config.php avvia la sessione 
 require_once "includes/config.php";
 require_once "classes/Database.php";
-require_once "includes/systemLog.php"; // Per scrivere nel file di log
+require_once "includes/systemLog.php"; 
 
 $message = "";
 $error = false;
 
-// 2. Se l'utente ha premuto "REGISTRATI"
 if (isset($_POST['register_btn'])) {
 
-    // Puliamo l'input (trim toglie spazi vuoti prima e dopo)
+
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    // Controllo campi vuoti (sicurezza extra oltre all'HTML)
     if (empty($username) || empty($password)) {
         $message = "Compila tutti i campi!";
         $error = true;
     } else {
-        // Connessione al DB
         $dbClass = new Database();
         $conn = $dbClass->getConnection();
 
-        // A. CONTROLLO SE L'UTENTE ESISTE GIÀ
         $checkSql = "SELECT id FROM users WHERE username = :user";
         $stmt = $conn->prepare($checkSql);
         $stmt->execute([':user' => $username]);
@@ -33,24 +28,20 @@ if (isset($_POST['register_btn'])) {
             $message = "Username già occupato. Scegline un altro.";
             $error = true;
         } else {
-            // B. CREAZIONE NUOVO UTENTE
-            
-            // Hash della password (sicurezza fondamentale)
             $passHash = password_hash($password, PASSWORD_DEFAULT);
 
-            // Inseriamo l'utente con 1000 crediti iniziali
+            //l'utente parte con 1000 crediti
             $insertSql = "INSERT INTO users (username, password, credits) VALUES (:user, :pass, 1000)";
             
             try {
                 $stmtInsert = $conn->prepare($insertSql);
                 $stmtInsert->execute([':user' => $username, ':pass' => $passHash]);
 
-                // C. SCRIVIAMO IL LOG (Requisito File)
+                
                 systemLog("Nuovo utente registrato: $username");
 
-                // D. REINDIRIZZAMENTO
-                // Mandiamo l'utente al login con un messaggio di successo (opzionale) o diretto
-                header("Location: index.php"); 
+               
+                header("Location: login.php"); 
                 exit();
 
             } catch (PDOException $e) {
@@ -69,9 +60,9 @@ if (isset($_POST['register_btn'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrazione - Blackjack</title>
     
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 

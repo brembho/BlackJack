@@ -1,10 +1,11 @@
 <?php
 session_start();
+require_once "includes/config.php";
 require_once 'classes/TableManager.php';
 require_once "includes/systemLog.php";
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 }
 
@@ -30,6 +31,8 @@ $tavoli = $tm->getOpenTables();
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="assets/css/style.css">
     <title>Lobby Blackjack</title>
 </head>

@@ -1,27 +1,34 @@
 <?php
-session_start();
+// 1. SETUP INIZIALE
+require_once "includes/config.php";
+require_once "classes/Database.php";
 
+// Controllo Login
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
-    exit;
+    header("Location: login.php");
+    exit();
 }
 
+// Controllo ID Tavolo nell'URL
+if (!isset($_GET['table_id'])) {
+    header("Location: lobby.php");
+    exit();
+}
+
+$tableId = intval($_GET['table_id']);
 $userId = $_SESSION['user_id'];
-$tableId = isset($_GET['table_id']) ? intval($_GET['table_id']) : 1;
 
-require_once 'classes/Database.php';
+// 2. CONNESSIONE AL DB (Il modo corretto, senza getInstance)
+$dbClass = new Database(); 
+$conn = $dbClass->getConnection();
 
-// Recupero i giocatori seduti al tavolo
-try {
-    $db = Database::getInstance()->getConnection();
-    $stmt = $db->prepare("SELECT users.id, users.username FROM game_players 
-                          JOIN users ON game_players.user_id = users.id
-                          WHERE game_players.table_id = ?");
-    $stmt->execute([$tableId]);
-    $players = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Errore DB: " . $e->getMessage());
+// 3. RECUPERO INFO TAVOLO (Giusto per vedere se esiste)
+$stmt = $conn->prepare("SELECT id FROM game_tables WHERE id = :id");
+$stmt->execute([':id' => $tableId]);
+if (!$stmt->fetch()) {
+    die("Errore: Il tavolo #$tableId non esiste.");
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -29,52 +36,54 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blackjack Multiplayer - Tavolo <?php echo $tableId; ?></title>
+    <title>Tavolo #<?php echo $tableId; ?> - Blackjack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<div class="table-container">
-
-    <header>
-        <h1>Blackjack Multiplayer</h1>
-        <p>Giocatore: <?php echo $_SESSION['username'] ?? $userId; ?></p>
-        <p>Tavolo ID: <?php echo $tableId; ?></p>
-    </header>
-
-    <!-- Campo nascosto con ID tavolo e ID giocatore -->
-    <input type="hidden" id="table-id" value="<?php echo $tableId; ?>">
-    <input type="hidden" id="player-id" value="<?php echo $userId; ?>">
-
-    <!-- Sezione Dealer -->
-    <section class="dealer-section">
-        <h2>Dealer</h2>
-        <div id="dealer-cards" class="cards-row"></div>
-        <div id="dealer-score" class="score"></div>
-    </section>
-
-    <!-- Sezione Giocatori -->
-    <section class="players-section">
-        <?php foreach ($players as $player): ?>
-            <div class="player" id="player-<?php echo $player['id']; ?>">
-                <h3><?php echo htmlspecialchars($player['username']); ?></h3>
-                <div class="cards-row" id="player-cards-<?php echo $player['id']; ?>"></div>
-                <div class="score" id="player-score-<?php echo $player['id']; ?>"></div>
-            </div>
-        <?php endforeach; ?>
-    </section>
-
-    <!-- Status della partita -->
-    <div id="game-status" class="game-status"></div>
-
-    <!-- Controlli del giocatore -->
-    <div class="controls">
-        <button id="hit-btn">Carta</button>
-        <button id="stand-btn">Sto</button>
+    <div class="user-bar">
+        <div class="user-info">
+            Tavolo #<?php echo $tableId; ?>
+        </div>
+        <div>
+            <a href="lobby.php" class="btn-logout" style="background:transparent; border:1px solid gold; color:gold;">Torna alla Lobby</a>
+        </div>
     </div>
 
-</div>
+    <div class="game-table">
+        
+        <div class="dealer-area">
+            <h3 style="color: #ddd; margin-bottom: 10px;">BANCO</h3>
+            <div id="dealer-cards" class="hand">
+                <div class="card" style="background:gray;"></div> <div class="card"></div>
+            </div>
+            <div id="dealer-score" class="score-badge">Punti: ?</div>
+        </div>
 
-<script src="assets/js/game.js"></script>
+        <hr style="width: 50%; border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+
+        <div id="players-area" class="players-grid">
+            <p style="color: white;">Caricamento giocatori...</p>
+        </div>
+
+        <div id="action-bar" class="actions-bar" style="display: none;">
+            <div style="text-align: center; width: 100%;">
+                <p style="color: gold; font-weight: bold; margin-bottom: 10px;">È IL TUO TURNO!</p>
+                <button onclick="doAction('hit')" class="btn-hit">CARTA (+)</button>
+                <button onclick="doAction('stand')" class="btn-stand">STO (-)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const currentTableId = <?php echo $tableId; ?>;
+        const myUserId = <?php echo $userId; ?>;
+    </script>
+    
+    <script src="assets/js/game.js"></script>
+
 </body>
 </html>
