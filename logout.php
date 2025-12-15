@@ -1,5 +1,5 @@
 <?php
-require_once "includes/system_logger.php";
+require_once "includes/systemLog.php";
 session_start();
 $_SESSION = array();
 session_destroy();

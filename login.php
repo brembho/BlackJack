@@ -1,7 +1,7 @@
 <?php
 require_once "includes/config.php";
 require_once "classes/user.php";
-require_once "includes/system_logger.php";
+require_once "includes/systemLog.php";
 
 $user = new user();
 $message = "";

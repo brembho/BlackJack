@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'classes/TableManager.php';
-require_once "includes/system_logger.php";
+require_once "includes/systemLog.php";
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
