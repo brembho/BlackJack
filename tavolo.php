@@ -1,89 +1,82 @@
 <?php
-// 1. SETUP INIZIALE
+
+session_start();
+
 require_once "includes/config.php";
 require_once "classes/Database.php";
 
-// Controllo Login
+// Controllo login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
-    exit();
+    exit;
 }
 
-// Controllo ID Tavolo nell'URL
+// Controllo ID tavolo
 if (!isset($_GET['table_id'])) {
     header("Location: lobby.php");
-    exit();
+    exit;
 }
 
-$tableId = intval($_GET['table_id']);
-$userId = $_SESSION['user_id'];
+$tableId = (int)$_GET['table_id'];
+$userId  = $_SESSION['user_id'];
 
-// 2. CONNESSIONE AL DB (Il modo corretto, senza getInstance)
-$dbClass = new Database(); 
-$conn = $dbClass->getConnection();
+// Connessione al DB
+$db = Database::getInstance()->getConnection();
 
-// 3. RECUPERO INFO TAVOLO (Giusto per vedere se esiste)
-$stmt = $conn->prepare("SELECT id FROM game_tables WHERE id = :id");
-$stmt->execute([':id' => $tableId]);
+// Verifica esistenza tavolo
+$stmt = $db->prepare("SELECT id FROM game_tables WHERE id = ?");
+$stmt->execute([$tableId]);
+
 if (!$stmt->fetch()) {
-    die("Errore: Il tavolo #$tableId non esiste.");
+    die("Tavolo non esistente");
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tavolo #<?php echo $tableId; ?> - Blackjack</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    
+    <title>Tavolo #<?= $tableId ?> - Blackjack</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <div class="user-bar">
-        <div class="user-info">
-            Tavolo #<?php echo $tableId; ?>
-        </div>
-        <div>
-            <a href="lobby.php" class="btn-logout" style="background:transparent; border:1px solid gold; color:gold;">Torna alla Lobby</a>
-        </div>
+<!-- Barra superiore -->
+<div class="user-bar">
+    <div>Tavolo #<?= $tableId ?></div>
+    <a href="lobby.php">Lobby</a>
+</div>
+
+<!-- Tavolo da gioco -->
+<div class="game-table">
+
+    <!-- Banco -->
+    <div class="dealer-area">
+        <h3>BANCO</h3>
+        <div id="dealer-cards" class="hand"></div>
+        <div id="dealer-score">Punti: ?</div>
     </div>
 
-    <div class="game-table">
-        
-        <div class="dealer-area">
-            <h3 style="color: #ddd; margin-bottom: 10px;">BANCO</h3>
-            <div id="dealer-cards" class="hand">
-                <div class="card" style="background:gray;"></div> <div class="card"></div>
-            </div>
-            <div id="dealer-score" class="score-badge">Punti: ?</div>
-        </div>
+    <hr>
 
-        <hr style="width: 50%; border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+    <!-- Giocatori (riempiti da JS) -->
+    <div id="players-area" class="players-grid"></div>
 
-        <div id="players-area" class="players-grid">
-            <p style="color: white;">Caricamento giocatori...</p>
-        </div>
-
-        <div id="action-bar" class="actions-bar" style="display: none;">
-            <div style="text-align: center; width: 100%;">
-                <p style="color: gold; font-weight: bold; margin-bottom: 10px;">È IL TUO TURNO!</p>
-                <button onclick="doAction('hit')" class="btn-hit">CARTA (+)</button>
-                <button onclick="doAction('stand')" class="btn-stand">STO (-)</button>
-            </div>
-        </div>
-
+    <!-- Azioni -->
+    <div id="action-bar" style="display:none;">
+        <button onclick="doAction('hit')">CARTA</button>
+        <button onclick="doAction('stand')">STO</button>
     </div>
 
-    <script>
-        const currentTableId = <?php echo $tableId; ?>;
-        const myUserId = <?php echo $userId; ?>;
-    </script>
-    
-    <script src="assets/js/game.js"></script>
+</div>
+
+<script>
+    // Variabili usate da game.js
+    const currentTableId = <?= $tableId ?>;
+    const myUserId = <?= $userId ?>;
+</script>
+
+<script src="assets/js/game.js"></script>
 
 </body>
 </html>
