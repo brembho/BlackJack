@@ -1,54 +1,80 @@
-// ID del tavolo corrente, va definito nel PHP di tavolo.php
-const tableId = document.getElementById('table-id').value;
+// variabili tavolo e utente
+const tableId = currentTableId;
+const myUserId = currentUserId;
 
-// Elementi DOM
+// elementi DOM
 const dealerDiv = document.getElementById('dealer-cards');
-const playerDiv = document.getElementById('player-cards');
-const hitButton = document.getElementById('hit-btn');
-const standButton = document.getElementById('stand-btn');
-const statusDiv = document.getElementById('game-status');
+const dealerScoreDiv = document.getElementById('dealer-score');
+const playersDiv = document.getElementById('players-area');
+const actionBar = document.getElementById('action-bar');
 
-// Funzione per aggiornare le carte nel DOM
-function updateCards(cardsDiv, cardsArray) {
-    cardsDiv.innerHTML = ''; // pulisce le carte
-    cardsArray.forEach(card => {
+const hitButton = document.querySelector('.btn-hit');
+const standButton = document.querySelector('.btn-stand');
+
+// funzione per trasformare carta in immagine
+function cardToImage(card) {
+    const suits = { 'H': 'hearts', 'D': 'diamonds', 'C': 'clubs', 'S': 'spades' };
+    let value = card.slice(0, -1);
+    const suit = suits[card.slice(-1)];
+
+    if (value === 'A') value = '01';
+    else if (value === 'J') value = '11';
+    else if (value === 'Q') value = '12';
+    else if (value === 'K') value = '13';
+    else value = value.padStart(2,'0');
+
+    return `assets/img/cards/card_${suit}_${value}.png`;
+}
+
+// funzione per disegnare le carte in un div
+function renderCards(container, cards) {
+    container.innerHTML = '';
+    cards.forEach(card => {
         const img = document.createElement('img');
-        img.src = `assets/img/cards/${card}.png`;
+        img.src = cardToImage(card);
         img.alt = card;
-        img.classList.add('card-img');
-        cardsDiv.appendChild(img);
+        img.classList.add('card');
+        container.appendChild(img);
     });
 }
 
-// Funzione per fare fetch dello stato del tavolo
-async function fetchGameState() {
-    try {
-        const response = await fetch(`api/get_state.php?table_id=${tableId}`);
-        const data = await response.json();
-
-        // Aggiorna carte dealer e giocatore
-        updateCards(dealerDiv, data.dealer);
-        updateCards(playerDiv, data.player);
-
-        // Aggiorna lo status della partita
-        statusDiv.textContent = data.status || '';
-
-        // Disabilita bottoni se non è il turno del giocatore
-        if (data.current_turn !== data.player_id) {
-            hitButton.disabled = true;
-            standButton.disabled = true;
-        } else {
-            hitButton.disabled = false;
-            standButton.disabled = false;
-        }
-
-    } catch (error) {
-        console.error('Errore fetchGameState:', error);
-    }
+// mostra le carte del dealer
+function renderDealer(table) {
+    dealerDiv.innerHTML = '';
+    table.dealer_hand.forEach((card, index) => {
+        const img = document.createElement('img');
+        if (index === 0 && table.status === 'playing') img.src = 'assets/img/cards/back.png';
+        else img.src = cardToImage(card);
+        img.classList.add('card');
+        dealerDiv.appendChild(img);
+    });
+    dealerScoreDiv.textContent = table.status === 'playing' ? 'Punti: ?' : 'Punti visibili';
 }
 
-// Funzione per inviare azioni al server
-async function sendAction(action) {
+// mostra i giocatori
+function renderPlayers(players, turnPlayerId) {
+    playersDiv.innerHTML = '';
+    players.forEach(p => {
+        const div = document.createElement('div');
+        div.classList.add('player-box');
+        if (p.user_id === turnPlayerId) div.classList.add('player-turn');
+        if (p.is_me) div.classList.add('player-me');
+
+        div.innerHTML = `<h4>${p.username}</h4><div class="hand" id="hand-${p.user_id}"></div><div class="player-status">${p.status ?? ''}</div>`;
+        playersDiv.appendChild(div);
+
+        const handDiv = document.getElementById(`hand-${p.user_id}`);
+        renderCards(handDiv, p.hand);
+    });
+}
+
+// mostra o nasconde barra azioni
+function handleActionBar(turnPlayerId, currentUserId) {
+    actionBar.style.display = (turnPlayerId === currentUserId) ? 'block' : 'none';
+}
+
+// invia azione al server
+async function doAction(action) {
     try {
         const response = await fetch('api/do_action.php', {
             method: 'POST',
@@ -56,24 +82,28 @@ async function sendAction(action) {
             body: JSON.stringify({ table_id: tableId, action })
         });
         const data = await response.json();
-
-        if (data.error) {
-            alert(data.error);
-        } else {
-            // Aggiorna immediatamente lo stato dopo la mossa
-            fetchGameState();
-        }
-    } catch (error) {
-        console.error('Errore sendAction:', error);
+        if (data.error) alert(data.error);
+        fetchGameState();
+    } catch(err) {
+        console.error('Errore doAction:', err);
     }
 }
 
-// Event listeners
-hitButton.addEventListener('click', () => sendAction('hit'));
-standButton.addEventListener('click', () => sendAction('stand'));
+// aggiorna stato tavolo
+async function fetchGameState() {
+    try {
+        const res = await fetch(`api/get_state.php?table_id=${tableId}`);
+        const data = await res.json();
+        if (data.error) return;
 
-// Polling automatico ogni 2 secondi
+        renderDealer(data.table);
+        renderPlayers(data.players, data.table.turn_player_id);
+        handleActionBar(data.table.turn_player_id, data.current_user_id);
+    } catch(err) {
+        console.error('Errore fetchGameState:', err);
+    }
+}
+
+// polling automatico
 setInterval(fetchGameState, 2000);
-
-// Primo fetch all'apertura della pagina
 fetchGameState();
