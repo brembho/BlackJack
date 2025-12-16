@@ -1,11 +1,11 @@
 <?php
-// api/do_action.php
+
 session_start();
 header('Content-Type: application/json');
 
 require_once '../classes/Database.php';
 require_once '../classes/Deck.php';
-require_once '../classes/Game.php';
+require_once '../classes/GameRules.php';
 
 // Controllo login
 if (!isset($_SESSION['user_id'])) {
@@ -16,12 +16,12 @@ if (!isset($_SESSION['user_id'])) {
 // Ricevo i dati JSON dal frontend
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['table_id']) || !isset($data['action'])) {
+if (!isset($data['table_id'], $data['action'])) {
     echo json_encode(['error' => 'Dati mancanti']);
     exit;
 }
 
-$tableId = intval($data['table_id']);
+$tableId = (int)$data['table_id'];
 $action = strtolower($data['action']);
 $userId = $_SESSION['user_id'];
 
@@ -38,30 +38,25 @@ try {
         exit;
     }
 
-    // Recupero le carte del mazzo dal DB (array JSON)
-    $deckArray = json_decode($table['deck'], true);
-    $playerHands = json_decode($table['player_hands'], true);
-    $dealerHand = json_decode($table['dealer_hand'], true);
-    $currentTurn = $table['current_turn'];
-
-    // Controllo se è il turno del giocatore
-    if ($currentTurn != $userId) {
+    if ($table['current_turn'] != $userId) {
         echo json_encode(['error' => 'Non è il tuo turno']);
         exit;
     }
 
-    $game = new Game(); // Classe che calcola punteggi, regole, ecc.
-    $deck = new Deck($deckArray); // Ricrea il mazzo dal DB
+    $deckArray    = json_decode($table['deck'], true);
+    $playerHands = json_decode($table['player_hands'], true);
+    $dealerHand  = json_decode($table['dealer_hand'], true);
+    $status      = $table['status'] ?? 'playing';
+
+    $deck = new Deck();
+    $deck->loadFromArray($deckArray);
 
     if ($action === 'hit') {
-        $card = $deck->drawCard();
-        $playerHands[$userId][] = $card;
+        $playerHands[$userId][] = $deck->drawCard();
+        $score = GameRules::calculateScore($playerHands[$userId]);
 
-        // Aggiorno punteggio
-        $score = $game->calculateScore($playerHands[$userId]);
         if ($score > 21) {
-            $table['status'] = 'bust'; // Sballato
-            // Passa turno al dealer
+            $status = 'bust';
             $table['current_turn'] = 'dealer';
         }
 
@@ -73,20 +68,25 @@ try {
         exit;
     }
 
-    // Salvo stato aggiornato nel DB
-    $stmt = $db->prepare("UPDATE game_tables SET deck = ?, player_hands = ?, dealer_hand = ?, current_turn = ?, status = ? WHERE id = ?");
+    $stmt = $db->prepare("
+        UPDATE game_tables 
+        SET deck = ?, player_hands = ?, dealer_hand = ?, current_turn = ?, status = ?
+        WHERE id = ?
+    ");
+
     $stmt->execute([
         json_encode($deck->getCards()),
         json_encode($playerHands),
         json_encode($dealerHand),
         $table['current_turn'],
-        $table['status'] ?? '',
+        $status,
         $tableId
     ]);
 
     echo json_encode(['success' => true]);
 
 } catch (PDOException $e) {
-    echo json_encode(['error' => $e->getMessage()]);
-    exit;
+    echo json_encode(['error' => 'Errore DB']);
 }
+
+?>

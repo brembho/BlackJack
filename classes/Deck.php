@@ -1,45 +1,39 @@
 <?php
+
 class Deck {
     private $cards = [];
+
     public function __construct() {
         $this->reset();
     }
-    //crea il mazzo da zero
+
+    // Crea e mescola il mazzo
     public function reset() {
-        $semi = ['H', 'D', 'C', 'S']; // Hearts, Diamonds, Clubs, Spades
-        $valori = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        $seeds = ['hearts', 'diamonds', 'clubs', 'spades'];
         $this->cards = [];
-        //costruzione del mazzo: combinazione di tutti i semi con tutti i valori
-        foreach ($semi as $seme) {
-            foreach ($valori as $valore) {
-                $this->cards[] = $valore . $seme;
+
+        foreach ($seeds as $seed) {
+            for ($i = 1; $i <= 13; $i++) {
+                $value = str_pad($i, 2, '0', STR_PAD_LEFT);
+                $this->cards[] = "{$seed}_{$value}";
             }
         }
+
         shuffle($this->cards);
     }
-    //pesca una carta (e la rimuove dal mazzo)
+
+    //pesca una carta
     public function drawCard() {
-        if (empty($this->cards)) {
-            return null; //mazzo finito ritorna null
-        }
         return array_pop($this->cards);
     }
 
-    //numero carte rimaste
-    public function remainingCards() {
-        return count($this->cards);
-    }
-
-    //restituisce lo stato attuale del mazzo sotto forma di array di carte
-    //per salvare il mazzo nel DB
+    //ritorna il mazzo (per salvarlo nel DB)
     public function getCards() {
         return $this->cards;
     }
-    
-    //carica il mazzo contenuto nel DB
-    //permette di mantenere lo stato del mazzo tra richieste AJAX dei giocatori
-    public function loadFromArray($array) {
-        $this->cards = $array;
+
+    //carica il mazzo dal DB
+    public function loadFromArray(array $cards) {
+        $this->cards = $cards;
     }
 }
-?>
