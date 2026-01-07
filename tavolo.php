@@ -21,10 +21,12 @@ $tableId = (int)$_GET['table_id'];
 $userId  = $_SESSION['user_id'];
 
 // Connessione al DB
-$db = Database::getInstance()->getConnection();
+$db = new Database();
+$conn = $db->getConnection();
+
 
 // Verifica esistenza tavolo
-$stmt = $db->prepare("SELECT id FROM game_tables WHERE id = ?");
+$stmt = $conn->prepare("SELECT id FROM game_tables WHERE id = ?");
 $stmt->execute([$tableId]);
 
 if (!$stmt->fetch()) {
@@ -32,51 +34,60 @@ if (!$stmt->fetch()) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Tavolo #<?= $tableId ?> - Blackjack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tavolo #<?php echo $tableId; ?> - Blackjack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<!-- Barra superiore -->
-<div class="user-bar">
-    <div>Tavolo #<?= $tableId ?></div>
-    <a href="lobby.php">Lobby</a>
-</div>
-
-<!-- Tavolo da gioco -->
-<div class="game-table">
-
-    <!-- Banco -->
-    <div class="dealer-area">
-        <h3>BANCO</h3>
-        <div id="dealer-cards" class="hand"></div>
-        <div id="dealer-score">Punti: ?</div>
+    <div class="user-bar">
+        <div class="user-info">
+            Tavolo #<?php echo $tableId; ?>
+        </div>
+        <div>
+            <a href="lobby.php" class="btn-logout" style="background:transparent; border:1px solid gold; color:gold;">Torna alla Lobby</a>
+        </div>
     </div>
 
-    <hr>
+    <div class="game-table">
+        
+        <div class="dealer-area">
+            <h3 style="color: #ddd; margin-bottom: 10px;">BANCO</h3>
+            <div id="dealer-cards" class="hand">
+                <div class="card" style="background:gray;"></div> <div class="card"></div>
+            </div>
+            <div id="dealer-score" class="score-badge">Punti: ?</div>
+        </div>
 
-    <!-- Giocatori (riempiti da JS) -->
-    <div id="players-area" class="players-grid"></div>
+        <hr style="width: 50%; border-color: rgba(255,255,255,0.1); margin: 20px 0;">
 
-    <!-- Azioni -->
-    <div id="action-bar" style="display:none;">
-        <button onclick="doAction('hit')">CARTA</button>
-        <button onclick="doAction('stand')">STO</button>
+        <div id="players-area" class="players-grid">
+            <p style="color: white;">Caricamento giocatori...</p>
+        </div>
+
+        <div id="action-bar" class="actions-bar" style="display: none;">
+            <div style="text-align: center; width: 100%;">
+                <p style="color: gold; font-weight: bold; margin-bottom: 10px;">È IL TUO TURNO!</p>
+                <button onclick="doAction('hit')" class="btn-hit">CARTA (+)</button>
+                <button onclick="doAction('stand')" class="btn-stand">STO (-)</button>
+            </div>
+        </div>
+
     </div>
 
-</div>
-
-<script>
-    // Variabili usate da game.js
-    const currentTableId = <?= $tableId ?>;
-    const myUserId = <?= $userId ?>;
-</script>
-
-<script src="assets/js/game.js"></script>
+    <script>
+        const currentTableId = <?php echo $tableId; ?>;
+        const myUserId = <?php echo $userId; ?>;
+    </script>
+    
+    <script src="assets/js/game.js"></script>
 
 </body>
 </html>
