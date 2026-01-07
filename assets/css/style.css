@@ -254,7 +254,6 @@ button:active, .btn-join:active {
 .card {
     width: 60px;
     height: 85px;
-    background: white;
     border: 2px solid #000;
     border-radius: 0; /* IMPORTANTE: Niente curve! */
     margin-left: -30px;
@@ -272,6 +271,7 @@ button:active, .btn-join:active {
 }
 .card:first-child { margin-left: 0; }
 .card:hover { transform: translateY(-8px); }
+
 
 /* Barra Azioni */
 .actions-bar {

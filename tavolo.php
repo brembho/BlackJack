@@ -60,14 +60,9 @@ if (!$stmt->fetch()) {
         
         <div class="dealer-area">
             <h3 style="color: #ddd; margin-bottom: 10px;">BANCO</h3>
-            <div id="dealer-cards" class="hand">
-                <div class="card" style="background:gray;"></div> <div class="card"></div>
-            </div>
+            <div id="dealer-cards" class="hand"></div>
             <div id="dealer-score" class="score-badge">Punti: ?</div>
         </div>
-
-        <hr style="width: 50%; border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-
         <div id="players-area" class="players-grid">
             <p style="color: white;">Caricamento giocatori...</p>
         </div>
@@ -88,6 +83,11 @@ if (!$stmt->fetch()) {
     </script>
     
     <script src="assets/js/game.js"></script>
+
+    <script>
+        let o = document.querySelector("#dealer-cards");
+        renderCards(o,["spades_A","spades_Q"]);
+    </script>
 
 </body>
 </html>

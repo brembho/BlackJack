@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../includes/config.php';
+
 class Database {
     private $host = DB_HOST;
     private $db_name = DB_NAME;
