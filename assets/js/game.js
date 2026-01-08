@@ -1,4 +1,8 @@
 // elementi DOM
+const urlParams = new URLSearchParams(window.location.search);
+const currentTableId = urlParams.get('table_id');
+
+
 const dealerDiv = document.getElementById('dealer-cards');
 const dealerScoreDiv = document.getElementById('dealer-score');
 const playersDiv = document.getElementById('players-area');
@@ -34,7 +38,7 @@ function renderDealer(table) {
 
         // Se il gioco è in corso, la prima carta è coperta
         if (index === 0 && table.status === 'playing') {
-            img.src = 'img/cards/back.png';
+            img.src = 'assets/img/cards/back.png';
         } else {
             img.src = cardToImage(card);
         }
@@ -93,7 +97,7 @@ async function doAction(action) {
         const response = await fetch('api/do_action.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ table_id: tableId, action })
+            body: JSON.stringify({ table_id: currentTableId, action })
         });
         const data = await response.json();
         if (data.error) alert(data.error);

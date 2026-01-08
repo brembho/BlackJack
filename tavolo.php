@@ -78,7 +78,6 @@ if (!$stmt->fetch()) {
     </div>
 
     <script>
-        const currentTableId = <?php echo $tableId; ?>;
         const myUserId = <?php echo $userId; ?>;
     </script>
     
