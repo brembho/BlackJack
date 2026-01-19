@@ -15,6 +15,8 @@ CREATE TABLE game_tables (
     dealer_hand TEXT, -- Salveremo le carte come JSON: ["10H", "AD"]
     turn_player_id INT DEFAULT NULL, -- ID dell'utente che deve muovere
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ALTER TABLE game_tables ADD COLUMN shoe LONGTEXT NULL;
+    ALTER TABLE game_tables MODIFY status ENUM('waiting', 'betting', 'playing', 'finished') DEFAULT 'betting';
 );
 
 -- 3. Tabella Giocatori al Tavolo (Chi è seduto dove)

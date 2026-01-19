@@ -1,39 +1,20 @@
 <?php
-
 class Deck {
-    private $cards = [];
+    private $suits = ['H', 'D', 'C', 'S']; 
+    private $values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
-    public function __construct() {
-        $this->reset();
-    }
-
-    // Crea e mescola il mazzo
-    public function reset() {
-        $seeds = ['hearts', 'diamonds', 'clubs', 'spades'];
-        $this->cards = [];
-
-        foreach ($seeds as $seed) {
-            for ($i = 1; $i <= 13; $i++) {
-                $value = str_pad($i, 2, '0', STR_PAD_LEFT);
-                $this->cards[] = "{$seed}_{$value}";
+    // Genera un Sabot da 6 mazzi (312 carte) mescolati
+    public function generateShoe() {
+        $shoe = [];
+        for ($i = 0; $i < 6; $i++) {
+            foreach ($this->suits as $suit) {
+                foreach ($this->values as $value) {
+                    $shoe[] = $value . $suit; // Es: "10H", "2D", "AS"
+                }
             }
         }
-
-        shuffle($this->cards);
-    }
-
-    //pesca una carta
-    public function drawCard() {
-        return array_pop($this->cards);
-    }
-
-    //ritorna il mazzo (per salvarlo nel DB)
-    public function getCards() {
-        return $this->cards;
-    }
-
-    //carica il mazzo dal DB
-    public function loadFromArray(array $cards) {
-        $this->cards = $cards;
+        shuffle($shoe);
+        return $shoe;
     }
 }
+?>

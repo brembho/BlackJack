@@ -1,133 +1,178 @@
-// elementi DOM
-const urlParams = new URLSearchParams(window.location.search);
-const currentTableId = urlParams.get('table_id');
+/* assets/js/game.js */
 
-
+// Riferimenti DOM
 const dealerDiv = document.getElementById('dealer-cards');
 const dealerScoreDiv = document.getElementById('dealer-score');
 const playersDiv = document.getElementById('players-area');
+const bettingArea = document.getElementById('betting-area');
 const actionBar = document.getElementById('action-bar');
+const gameMessage = document.getElementById('game-message');
+const waitMessage = document.getElementById('wait-message');
 
-const hitButton = document.querySelector('.btn-hit');
-const standButton = document.querySelector('.btn-stand');
+// Bottoni
+const btnPlaceBet = document.getElementById('btn-place-bet');
+const btnHit = document.querySelector('.btn-hit');
+const btnStand = document.querySelector('.btn-stand');
 
-// funzione per trasformare carta in immagine
-function cardToImage(card) {
-    return `assets/img/cards/${card}.png`;
+// Listeners
+if(btnPlaceBet) btnPlaceBet.addEventListener('click', placeBet);
+if(btnHit) btnHit.addEventListener('click', () => doAction('hit'));
+if(btnStand) btnStand.addEventListener('click', () => doAction('stand'));
+
+/* --- 1. GESTIONE NOMI IMMAGINI --- */
+function getCardImageSrc(cardCode) {
+    if (!cardCode) return '';
+    
+    // cardCode: "10H", "2D", "JC", "AS"
+    let value = cardCode.slice(0, -1); 
+    const suitChar = cardCode.slice(-1);
+    
+    const suitsMap = { 'H': 'hearts', 'D': 'diamonds', 'C': 'clubs', 'S': 'spades' };
+    const suitName = suitsMap[suitChar];
+
+    
+    if (value === 'J') value = 'j';
+    else if (['Q', 'K', 'A'].includes(value)) value = value;
+    else if (parseInt(value) < 10) value = '0' + value;
+
+    return `assets/img/cards/${suitName}_${value}.png`;
 }
 
-// funzione per disegnare le carte in un div
-function renderCards(container, cards) {
-    container.innerHTML = '';
-    cards.forEach(card => {
-        const img = document.createElement('img');
-        img.src = cardToImage(card);
-        img.classList.add('card'); // solo immagine
-        container.appendChild(img);
-    });
-}
-
-
-// mostra le carte del dealer
-function renderDealer(table) {
-    dealerDiv.innerHTML = '';
-
-    table.dealer_hand.forEach((card, index) => {
-        const img = document.createElement('img');
-        img.classList.add('card');
-
-        // Se il gioco è in corso, la prima carta è coperta
-        if (index === 0 && table.status === 'playing') {
-            img.src = 'assets/img/cards/back.png';
+/* --- 2. LOGICA API --- */
+async function placeBet() {
+    const amount = document.getElementById('bet-amount').value;
+    try {
+        const res = await fetch('api/place_bet.php', {
+            method: 'POST', body: new URLSearchParams({ 'table_id': currentTableId, 'amount': amount })
+        });
+        const data = await res.json();
+        if (data.success) {
+            bettingArea.style.display = 'none';
+            fetchGameState();
         } else {
-            img.src = cardToImage(card);
+            alert(data.error);
         }
-
-        dealerDiv.appendChild(img);
-    });
-
-    // Aggiorna il punteggio
-    dealerScoreDiv.textContent = table.status === 'playing'
-        ? 'Punti: ?'
-        : `Punti: ${table.dealer_score}`;
+    } catch (e) { console.error(e); }
 }
 
-
-
-// mostra i giocatori
-function renderPlayers(players, turnPlayerId, tableStatus) {
-    playersDiv.innerHTML = '';
-
-    players.forEach(p => {
-        const div = document.createElement('div');
-        div.classList.add('player-box');
-        if (p.user_id === turnPlayerId) div.classList.add('player-turn');
-        if (p.is_me) div.classList.add('player-me');
-
-        div.innerHTML = `<h4>${p.username}</h4>
-                         <div class="hand" id="hand-${p.user_id}"></div>
-                         <div class="player-status">${p.status ?? ''}</div>`;
-        playersDiv.appendChild(div);
-
-        const handDiv = document.getElementById(`hand-${p.user_id}`);
-
-        // Se il gioco è finito, mostra tutte le carte
-        if (tableStatus === 'finished') {
-            renderCards(handDiv, p.hand);
-        } else {
-            // In gioco, puoi eventualmente coprire alcune carte se vuoi
-            renderCards(handDiv, p.hand);
-        }
-    });
-}
-
-
-// mostra o nasconde barra azioni
-function handleActionBar(turnPlayerId, currentUserId, tableStatus) {
-    if (tableStatus === 'finished') {
-        actionBar.style.display = 'none';
-    } else {
-        actionBar.style.display = (turnPlayerId === currentUserId) ? 'block' : 'none';
-    }
-}
-
-// invia azione al server
 async function doAction(action) {
     try {
-        const response = await fetch('api/do_action.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ table_id: currentTableId, action })
+        await fetch('api/do_action.php', {
+            method: 'POST', body: new URLSearchParams({ 'table_id': currentTableId, 'action': action })
         });
-        const data = await response.json();
-        if (data.error) alert(data.error);
         fetchGameState();
-    } catch (err) {
-        console.error('Errore doAction:', err);
+    } catch(err) { console.error(err); }
+}
+
+/* --- 3. RENDERING --- */
+function renderDealer(table) {
+    dealerDiv.innerHTML = '';
+    dealerScoreDiv.innerText = (table.status === 'playing') ? 'Punti: ?' : 'Punti: (Vedi carte)';
+    
+    if (table.dealer_hand && table.dealer_hand.length > 0) {
+        table.dealer_hand.forEach((cardCode, index) => {
+            const img = document.createElement('img');
+            img.classList.add('card');
+            
+            // Carta coperta se è la 2° e stiamo giocando
+            if (index > 0 && table.status === 'playing') {
+                img.src = 'assets/img/cards/back.png'; // Assicurati di avere questo file o usa un jolly
+            } else {
+                img.src = getCardImageSrc(cardCode);
+            }
+            // Fallback se manca l'immagine
+            img.onerror = function() { this.style.display='none'; };
+            dealerDiv.appendChild(img);
+        });
     }
 }
 
+function renderPlayers(players, turnPlayerId) {
+    playersDiv.innerHTML = '';
+    players.forEach(p => {
+        // Se siamo in betting e non hai puntato, non mostrare mano vuota
+        if (p.status === 'betting' && (!p.hand || p.hand.length == 0)) return;
 
+        const div = document.createElement('div');
+        div.className = 'player-seat';
+        if (String(p.user_id) === String(turnPlayerId)) div.classList.add('active-turn');
 
-// aggiorna stato tavolo
+        let statusTxt = `Bet: €${p.bet}`;
+        if(p.status === 'won') statusTxt = "VINTO ";
+        if(p.status === 'lost') statusTxt = "PERSO";
+        if(p.status === 'bust') statusTxt = "SBALLATO";
+        if(p.status === 'push') statusTxt = "PAREGGIO";
+
+        div.innerHTML = `
+            <div>${p.username} ${p.is_me ? '(TU)' : ''}</div>
+            <div class="hand" id="hand-${p.user_id}"></div>
+            <div class="score-badge">${statusTxt}</div>
+        `;
+        playersDiv.appendChild(div);
+
+        const handC = document.getElementById(`hand-${p.user_id}`);
+        if(p.hand) {
+            p.hand.forEach(c => {
+                const img = document.createElement('img');
+                img.classList.add('card');
+                img.src = getCardImageSrc(c);
+                handC.appendChild(img);
+            });
+        }
+    });
+}
+
 async function fetchGameState() {
     try {
+        // Usa currentTableId definito in tavolo.php
         const res = await fetch(`api/get_state.php?table_id=${currentTableId}`);
-        const text = await res.text();
-        console.log('Response text:', text); // Log della risposta grezza
-
-
-        const data = JSON.parse(text);
+        const data = await res.json();
         if (data.error) return;
 
-        renderDealer(data.table);
-        renderPlayers(data.players, data.table.turn_player_id, data.table.status);
-        handleActionBar(data.table.turn_player_id, data.current_user_id);
-    } catch (err) {
-        console.error('Errore fetchGameState:', err);
-    }
+        const table = data.table;
+        const me = data.players.find(p => String(p.user_id) === String(data.current_user_id));
+
+        // RESETTA VISTE
+        if (table.status === 'betting') {
+            dealerDiv.innerHTML = '';
+            // Se io devo ancora puntare
+            if (!me || me.status === 'betting') {
+                bettingArea.style.display = 'block';
+                waitMessage.style.display = 'none';
+                btnPlaceBet.style.display = 'inline-block';
+            } else {
+                // Ho puntato, aspetto start
+                bettingArea.style.display = 'block';
+                btnPlaceBet.style.display = 'none';
+                waitMessage.style.display = 'block';
+                waitMessage.innerText = "Puntata fatta. Aspetta...";
+            }
+            actionBar.style.display = 'none';
+        } 
+        else if (table.status === 'playing') {
+            bettingArea.style.display = 'none';
+            renderDealer(table);
+            renderPlayers(data.players, table.turn_player_id);
+            
+            if (String(table.turn_player_id) === String(data.current_user_id)) {
+                actionBar.style.display = 'flex';
+            } else {
+                actionBar.style.display = 'none';
+            }
+        }
+        else if (table.status === 'finished') {
+            bettingArea.style.display = 'none';
+            actionBar.style.display = 'none';
+            renderDealer(table);
+            renderPlayers(data.players, null);
+            gameMessage.innerText = "MANO FINITA! Ricarica tra 5s...";
+            
+            // Auto-reload per nuova mano (semplificazione)
+            setTimeout(() => location.reload(), 5000);
+        }
+
+    } catch(e) { console.error(e); }
 }
 
-// polling automatico
 setInterval(fetchGameState, 2000);
 fetchGameState();

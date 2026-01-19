@@ -46,7 +46,9 @@ try {
         $playersClean[] = $p;
     }
 
+
     // Puliamo la mano del dealer
+    
     $dealerHand = json_decode($tableData['dealer_hand']);
 
     //  RISPOSTA FINALE
