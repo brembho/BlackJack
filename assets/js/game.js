@@ -1,6 +1,6 @@
-/* assets/js/game.js */
+/* assets/js/game.js - Fix Carte Triple e Undefined */
 
-// Riferimenti DOM
+// DOM Elements
 const dealerDiv = document.getElementById('dealer-cards');
 const dealerScoreDiv = document.getElementById('dealer-score');
 const playersDiv = document.getElementById('players-area');
@@ -9,7 +9,6 @@ const actionBar = document.getElementById('action-bar');
 const gameMessage = document.getElementById('game-message');
 const waitMessage = document.getElementById('wait-message');
 
-// Bottoni
 const btnPlaceBet = document.getElementById('btn-place-bet');
 const btnHit = document.querySelector('.btn-hit');
 const btnStand = document.querySelector('.btn-stand');
@@ -19,18 +18,15 @@ if(btnPlaceBet) btnPlaceBet.addEventListener('click', placeBet);
 if(btnHit) btnHit.addEventListener('click', () => doAction('hit'));
 if(btnStand) btnStand.addEventListener('click', () => doAction('stand'));
 
-/* --- 1. GESTIONE NOMI IMMAGINI --- */
+/* --- 1. GESTIONE IMMAGINI --- */
 function getCardImageSrc(cardCode) {
     if (!cardCode) return '';
     
-    // cardCode: "10H", "2D", "JC", "AS"
     let value = cardCode.slice(0, -1); 
     const suitChar = cardCode.slice(-1);
-    
     const suitsMap = { 'H': 'hearts', 'D': 'diamonds', 'C': 'clubs', 'S': 'spades' };
     const suitName = suitsMap[suitChar];
 
-    
     if (value === 'J') value = 'j';
     else if (['Q', 'K', 'A'].includes(value)) value = value;
     else if (parseInt(value) < 10) value = '0' + value;
@@ -38,21 +34,28 @@ function getCardImageSrc(cardCode) {
     return `assets/img/cards/${suitName}_${value}.png`;
 }
 
-/* --- 2. LOGICA API --- */
+/* --- 2. API CALLS --- */
 async function placeBet() {
     const amount = document.getElementById('bet-amount').value;
+    // Disabilita il bottone per evitare doppi click
+    btnPlaceBet.disabled = true;
+    
     try {
         const res = await fetch('api/place_bet.php', {
             method: 'POST', body: new URLSearchParams({ 'table_id': currentTableId, 'amount': amount })
         });
         const data = await res.json();
+        
         if (data.success) {
             bettingArea.style.display = 'none';
+            // Aggiorna subito lo stato
             fetchGameState();
         } else {
             alert(data.error);
         }
     } catch (e) { console.error(e); }
+    
+    btnPlaceBet.disabled = false; // Riabilita se serve
 }
 
 async function doAction(action) {
@@ -66,7 +69,14 @@ async function doAction(action) {
 
 /* --- 3. RENDERING --- */
 function renderDealer(table) {
-    dealerDiv.innerHTML = '';
+    dealerDiv.innerHTML = ''; // Pulisce sempre prima di disegnare
+    
+    // Se siamo in scommessa, nascondi i punti undefined
+    if (table.status === 'betting') {
+        dealerScoreDiv.style.display = 'none';
+        return;
+    }
+    dealerScoreDiv.style.display = 'block';
     dealerScoreDiv.innerText = (table.status === 'playing') ? 'Punti: ?' : 'Punti: (Vedi carte)';
     
     if (table.dealer_hand && table.dealer_hand.length > 0) {
@@ -74,13 +84,11 @@ function renderDealer(table) {
             const img = document.createElement('img');
             img.classList.add('card');
             
-            // Carta coperta se è la 2° e stiamo giocando
             if (index > 0 && table.status === 'playing') {
-                img.src = 'assets/img/cards/back.png'; // Assicurati di avere questo file o usa un jolly
+                img.src = 'assets/img/cards/back.png';
             } else {
                 img.src = getCardImageSrc(cardCode);
             }
-            // Fallback se manca l'immagine
             img.onerror = function() { this.style.display='none'; };
             dealerDiv.appendChild(img);
         });
@@ -88,30 +96,31 @@ function renderDealer(table) {
 }
 
 function renderPlayers(players, turnPlayerId) {
-    playersDiv.innerHTML = '';
+    playersDiv.innerHTML = ''; // FONDAMENTALE: Pulisce tutto per evitare duplicati
+    
     players.forEach(p => {
-        // Se siamo in betting e non hai puntato, non mostrare mano vuota
         if (p.status === 'betting' && (!p.hand || p.hand.length == 0)) return;
 
         const div = document.createElement('div');
-        div.className = 'player-seat';
-        if (String(p.user_id) === String(turnPlayerId)) div.classList.add('active-turn');
+        div.className = 'player-box'; // Usa la classe corretta del CSS
+        if (String(p.user_id) === String(turnPlayerId)) div.classList.add('player-turn');
 
         let statusTxt = `Bet: €${p.bet}`;
-        if(p.status === 'won') statusTxt = "VINTO ";
+        if(p.status === 'won') statusTxt = "VINTO";
         if(p.status === 'lost') statusTxt = "PERSO";
         if(p.status === 'bust') statusTxt = "SBALLATO";
         if(p.status === 'push') statusTxt = "PAREGGIO";
 
         div.innerHTML = `
-            <div>${p.username} ${p.is_me ? '(TU)' : ''}</div>
+            <div style="margin-bottom:5px;">${p.username} ${p.is_me ? '(TU)' : ''}</div>
             <div class="hand" id="hand-${p.user_id}"></div>
-            <div class="score-badge">${statusTxt}</div>
+            <div class="score-badge" style="color:gold; font-size:0.7rem;">${statusTxt}</div>
         `;
         playersDiv.appendChild(div);
 
         const handC = document.getElementById(`hand-${p.user_id}`);
-        if(p.hand) {
+        // Renderizza le carte SOLO se esistono
+        if(p.hand && Array.isArray(p.hand)) {
             p.hand.forEach(c => {
                 const img = document.createElement('img');
                 img.classList.add('card');
@@ -124,7 +133,6 @@ function renderPlayers(players, turnPlayerId) {
 
 async function fetchGameState() {
     try {
-        // Usa currentTableId definito in tavolo.php
         const res = await fetch(`api/get_state.php?table_id=${currentTableId}`);
         const data = await res.json();
         if (data.error) return;
@@ -132,43 +140,41 @@ async function fetchGameState() {
         const table = data.table;
         const me = data.players.find(p => String(p.user_id) === String(data.current_user_id));
 
-        // RESETTA VISTE
+        // STATO SCOMMESSA
         if (table.status === 'betting') {
-            dealerDiv.innerHTML = '';
-            // Se io devo ancora puntare
+            dealerDiv.innerHTML = ''; 
+            dealerScoreDiv.style.display = 'none'; // Nasconde punti
+            
             if (!me || me.status === 'betting') {
                 bettingArea.style.display = 'block';
                 waitMessage.style.display = 'none';
-                btnPlaceBet.style.display = 'inline-block';
             } else {
-                // Ho puntato, aspetto start
                 bettingArea.style.display = 'block';
-                btnPlaceBet.style.display = 'none';
+                document.getElementById('btn-place-bet').style.display = 'none'; // Nasconde solo il bottone
                 waitMessage.style.display = 'block';
-                waitMessage.innerText = "Puntata fatta. Aspetta...";
+                waitMessage.innerText = "Puntata accettata. Attendi...";
             }
             actionBar.style.display = 'none';
         } 
-        else if (table.status === 'playing') {
+        // STATO GIOCO
+        else {
             bettingArea.style.display = 'none';
-            renderDealer(table);
-            renderPlayers(data.players, table.turn_player_id);
+            // Resetta il bottone bet per il prossimo round
+            document.getElementById('btn-place-bet').style.display = 'inline-block';
             
-            if (String(table.turn_player_id) === String(data.current_user_id)) {
+            renderDealer(table);
+            renderPlayers(data.players, table.table_turn_id || table.turn_player_id);
+            
+            if (table.status === 'playing' && String(table.turn_player_id) === String(data.current_user_id)) {
                 actionBar.style.display = 'flex';
             } else {
                 actionBar.style.display = 'none';
             }
-        }
-        else if (table.status === 'finished') {
-            bettingArea.style.display = 'none';
-            actionBar.style.display = 'none';
-            renderDealer(table);
-            renderPlayers(data.players, null);
-            gameMessage.innerText = "MANO FINITA! Ricarica tra 5s...";
-            
-            // Auto-reload per nuova mano (semplificazione)
-            setTimeout(() => location.reload(), 5000);
+
+            if (table.status === 'finished') {
+                 gameMessage.innerText = "MANO FINITA! Ricarica...";
+                 setTimeout(() => location.reload(), 4000);
+            }
         }
 
     } catch(e) { console.error(e); }

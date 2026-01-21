@@ -35,7 +35,7 @@ $userId = $_SESSION['user_id'];
         <div id="betting-area" style="display:none; background:rgba(0,0,0,0.9); padding:20px; border:2px solid gold; z-index:100; position:absolute;">
             <h2 style="color:gold; margin-bottom:15px;">PUNTA</h2>
             <input type="number" id="bet-amount" value="10" min="1" max="500">
-            <button id="btn-place-bet" class="btn-hit" style="background:gold; color:black;">GIOCA</button>
+            <button id="btn-place-bet" class="btn-place-bet" style="background:gold; color:black;">GIOCA</button>
             <div id="wait-message" style="display:none; color:yellow; font-size:0.7rem; margin-top:10px;">In attesa...</div>
         </div>
 
