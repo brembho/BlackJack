@@ -7,6 +7,7 @@ if (!isset($_GET['table_id']) || !isset($_SESSION['user_id'])) {
 }
 $tableId = $_GET['table_id'];
 $userId = $_SESSION['user_id'];
+$punteggioPlayer = $_SESSION["punteggioPlayer"];
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -43,6 +44,7 @@ $userId = $_SESSION['user_id'];
 
         <div id="action-bar" class="actions-bar" style="display:none;">
             <p style="color:gold; width:100%; text-align:center; margin-bottom:10px;">TOCCA A TE!</p>
+            <p style="color:gold; width:100%; text-align:center; margin-bottom:10px;">Punteggio: <?php print($punteggioPlayer) ?></p>
             <button class="btn-hit">CARTA</button>
             <button class="btn-stand">STO</button>
         </div>
