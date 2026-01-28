@@ -43,6 +43,7 @@ try {
     if ($action === 'hit') {
         $hand[] = array_pop($shoe);
         $score = calculateScore($hand);
+        $_SESSION["punteggioPlayer"] = $score;
         if ($score > 21) {
             $status = 'bust';
             $upd = $conn->prepare("UPDATE game_players SET hand = :h, status = :s WHERE id = :id");
