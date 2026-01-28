@@ -18,18 +18,14 @@ $punteggioPlayer = $_SESSION["punteggioPlayer"];
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <div class="game-header">
-    <span>Tavolo #<?php echo $tableId; ?></span>
     
-    <div style="background:black; padding:5px 15px; border:2px solid gold; border-radius:5px; color:gold;">
-        SALDO: €<span id="user-credits-display">...</span>
-    </div>
 
-    <a href="lobby.php" class="btn-lobby">ESCI</a>
-</div>
 
     <div class="game-header">
         <span>Tavolo #<?php echo $tableId; ?></span>
+        <div style="background:black; padding:5px 15px; border:2px solid gold; border-radius:5px; color:gold;">
+        SALDO: €<span id="user-credits-display">...</span>
+         </div>
         <a href="lobby.php" class="btn-lobby">ESCI</a>
     </div>
 
@@ -53,7 +49,6 @@ $punteggioPlayer = $_SESSION["punteggioPlayer"];
 
         <div id="action-bar" class="actions-bar" style="display:none;">
             <p style="color:gold; width:100%; text-align:center; margin-bottom:10px;">TOCCA A TE!</p>
-            <p style="color:gold; width:100%; text-align:center; margin-bottom:10px;">Punteggio: <?php print($punteggioPlayer) ?></p>
             <button class="btn-hit">CARTA</button>
             <button class="btn-stand">STO</button>
         </div>
