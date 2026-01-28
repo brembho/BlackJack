@@ -123,7 +123,6 @@ function renderDealer(table) {
         table.dealer_hand.forEach((cardCode, index) => {
             const img = document.createElement('img');
             img.classList.add('card');
-            
             if (index > 0 && table.status === 'playing') {
                 img.src = 'assets/img/cards/back.png';
             } else {
