@@ -53,6 +53,7 @@ $punteggioPlayer = $_SESSION["punteggioPlayer"];
 
         <div id="action-bar" class="actions-bar" style="display:none;">
             <p style="color:gold; width:100%; text-align:center; margin-bottom:10px;">TOCCA A TE!</p>
+            <p style="color:gold; width:100%; text-align:center; margin-bottom:10px;">Punteggio: <?php print($punteggioPlayer) ?></p>
             <button class="btn-hit">CARTA</button>
             <button class="btn-stand">STO</button>
         </div>
