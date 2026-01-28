@@ -7,7 +7,6 @@ if (!isset($_GET['table_id']) || !isset($_SESSION['user_id'])) {
 }
 $tableId = $_GET['table_id'];
 $userId = $_SESSION['user_id'];
-$punteggioPlayer = $_SESSION["punteggioPlayer"];
 ?>
 <!DOCTYPE html>
 <html lang="it">

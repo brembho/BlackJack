@@ -123,6 +123,7 @@ function renderDealer(table) {
         table.dealer_hand.forEach((cardCode, index) => {
             const img = document.createElement('img');
             img.classList.add('card');
+            
             if (index > 0 && table.status === 'playing') {
                 img.src = 'assets/img/cards/back.png';
             } else {
@@ -209,14 +210,24 @@ async function fetchGameState() {
             actionBar.style.display = 'none';
         } 
         else if (table.status === 'playing') {
-            bettingArea.style.display = 'none';
             renderDealer(table);
             renderPlayers(data.players, table.turn_player_id);
-            
+
             if (String(table.turn_player_id) === String(data.current_user_id)) {
+                // È il MIO turno
                 actionBar.style.display = 'flex';
+                gameMessage.innerText = "È IL TUO TURNO!";
             } else {
+                // È il turno di un altro
                 actionBar.style.display = 'none';
+                
+                // Cerchiamo il nome di chi sta giocando
+                const activePlayer = data.players.find(p => String(p.user_id) === String(table.turn_player_id));
+                if (activePlayer) {
+                    gameMessage.innerText = `Attendi... tocca a ${activePlayer.username}`;
+                } else {
+                    gameMessage.innerText = "Attendi...";
+                }
             }
         }
         else if (table.status === 'finished') {
@@ -236,5 +247,5 @@ async function fetchGameState() {
     } catch(e) { console.error(e); }
 }
 
-setInterval(fetchGameState, 2000);
+setInterval(fetchGameState, 1000); 
 fetchGameState();
