@@ -7,6 +7,7 @@ if (!isset($_GET['table_id']) || !isset($_SESSION['user_id'])) {
 }
 $tableId = $_GET['table_id'];
 $userId = $_SESSION['user_id'];
+$punteggioPlayer = $_SESSION["punteggioPlayer"];
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -17,6 +18,15 @@ $userId = $_SESSION['user_id'];
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+    <div class="game-header">
+    <span>Tavolo #<?php echo $tableId; ?></span>
+    
+    <div style="background:black; padding:5px 15px; border:2px solid gold; border-radius:5px; color:gold;">
+        SALDO: €<span id="user-credits-display">...</span>
+    </div>
+
+    <a href="lobby.php" class="btn-lobby">ESCI</a>
+</div>
 
     <div class="game-header">
         <span>Tavolo #<?php echo $tableId; ?></span>
