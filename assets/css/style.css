@@ -252,8 +252,8 @@ button:active, .btn-join:active {
 }
 
 .card {
-    width: 60px;
-    height: 85px;
+    width: 70px;
+    height: 95px;
     border: 2px solid #000;
     border-radius: 0; /* IMPORTANTE: Niente curve! */
     margin-left: -30px;
