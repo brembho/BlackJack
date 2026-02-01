@@ -11,9 +11,18 @@ if (!isset($_SESSION['user_id'])) {
 
 $tm = new TableManager();
 
+// AGGIORNA CREDITI DAL DATABASE
+$db = new Database();
+$conn = $db->getConnection();
+$stmt = $conn->prepare("SELECT credits FROM users WHERE id = :id");
+$stmt->execute([':id' => $_SESSION['user_id']]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($user) {
+    $_SESSION['credits'] = $user['credits'];
+}
+
 if (isset($_POST['create_btn'])) {
     $newTableId = $tm->createTable($_SESSION['user_id']);
-
     header("Location: tavolo.php?table_id=" . $newTableId);
     exit();
 }
@@ -32,14 +41,13 @@ $tavoli = $tm->getOpenTables();
 <html lang="it">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="assets/css/style.css">
     <title>Lobby Blackjack</title>
 </head>
 <body>
     <div class="login-container" style="max-width: 600px;">
         <h1>Lobby di Gioco</h1>
-        <p>Benvenuto, <?php echo $_SESSION['username']; ?>!</p>
+        <p>Benvenuto, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
         <p>Crediti: <?php echo $_SESSION['credits']; ?> €</p>
 
         <form method="POST">
@@ -59,10 +67,14 @@ $tavoli = $tm->getOpenTables();
                             (Giocatori: <?php echo $tavolo['num_players']; ?>)
                         </span>
                         
-                        <a href="lobby.php?join_id=<?php echo $tavolo['id']; ?>" 
-                           style="background: gold; padding: 5px 10px; border-radius: 5px; color: black; font-weight: bold;">
-                           ENTRA
-                        </a>
+                        <?php if ($tavolo['status'] == 'waiting' || $tavolo['status'] == 'betting'): ?>
+                            <a href="lobby.php?join_id=<?php echo $tavolo['id']; ?>" 
+                               style="background: gold; padding: 5px 10px; border-radius: 5px; color: black; font-weight: bold;">
+                               ENTRA
+                            </a>
+                        <?php else: ?>
+                            <span style="color: red;">IN GIOCO</span>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>

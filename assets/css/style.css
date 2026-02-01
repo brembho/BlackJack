@@ -1,3 +1,19 @@
+/* stati */
+.status-won { color: #4CAF50 !important; }
+.status-lost { color: #F44336 !important; }
+.status-push { color: #FFC107 !important; }
+.status-bust { color: #FF5722 !important; }
+.status-blackjack { color: #9C27B0 !important; }
+.status-playing { color: #2196F3 !important; }
+.status-stand { color: #FF9800 !important; }
+.status-waiting { color: #9E9E9E !important; }
+
+.player-turn {
+    border: 3px solid #FFD700 !important;
+    box-shadow: 0 0 15px #FFD700 !important;
+}
+
+
 /* =========================================
    1. VARIABILI & RESETS (THEME: 8-BIT)
    ========================================= */
@@ -293,4 +309,131 @@ button:active, .btn-join:active {
     font-size: 0.6rem;
     margin-top: 5px;
     display: inline-block;
+}
+
+/* MULTIPLAYER STYLES */
+.my-player {
+    border: 3px solid #4CAF50 !important;
+    background: rgba(76, 175, 80, 0.1) !important;
+}
+
+.player-turn {
+    border: 3px solid #FFD700 !important;
+    box-shadow: 0 0 15px #FFD700 !important;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px #FFD700; }
+    50% { box-shadow: 0 0 20px #FFD700; }
+    100% { box-shadow: 0 0 5px #FFD700; }
+}
+
+.players-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.player-box {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 15px;
+    min-width: 200px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.player-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+/* Status colors */
+.status-won { color: #4CAF50 !important; text-shadow: 0 0 10px #4CAF50; }
+.status-lost { color: #F44336 !important; }
+.status-push { color: #FFC107 !important; }
+.status-bust { color: #FF5722 !important; }
+.status-blackjack { color: #9C27B0 !important; text-shadow: 0 0 10px #9C27B0; }
+.status-playing { color: #2196F3 !important; }
+.status-stand { color: #FF9800 !important; }
+.status-waiting { color: #9E9E9E !important; }
+
+/* Betting area */
+#betting-area {
+    background: rgba(0, 0, 0, 0.95);
+    padding: 25px;
+    border: 3px solid gold;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+}
+
+#bet-amount {
+    width: 100px;
+    padding: 10px;
+    margin: 0 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    background: #222;
+    color: white;
+    border: 2px solid gold;
+    border-radius: 5px;
+}
+
+.btn-place-bet {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: black;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-place-bet:hover {
+    background: linear-gradient(45deg, #FFA500, #FFD700);
+    transform: scale(1.05);
+}
+
+.btn-place-bet:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Nuovo stato per giocatore pronto */
+.status-ready {
+    color: #00BCD4 !important;
+    text-shadow: 0 0 5px #00BCD4;
+}
+
+/* Migliora la visibilità dell'area di scommessa */
+#betting-area {
+    transition: all 0.3s ease;
+}
+
+#betting-area.hidden {
+    display: none !important;
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+/* Stile per il messaggio di attesa */
+#wait-message {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid gold;
+    margin-top: 10px;
+    font-size: 1.1rem;
 }
