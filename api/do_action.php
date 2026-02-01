@@ -5,9 +5,31 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../classes/Database.php';
 
-function calculateScore($hand) { /* ... solita funzione ... */
-    $s=0; $a=0; foreach($hand as $c){ $v=substr($c,0,-1); if(is_numeric($v))$s+=$v; elseif($v=='A'){$s+=11;$a++;} else $s+=10; }
-    while($s>21 && $a>0){$s-=10;$a--;} return $s;
+function calculateScore($hand) {
+    if (!$hand || empty($hand)) return 0;
+    
+    $score = 0;
+    $aces = 0;
+    
+    foreach ($hand as $card) {
+        $value = substr($card, 0, -1);
+        
+        if ($value === 'J' || $value === 'Q' || $value === 'K') {
+            $score += 10;
+        } elseif ($value === 'A') {
+            $score += 11;
+            $aces++;
+        } else {
+            $score += intval($value);
+        }
+    }
+    
+    while ($score > 21 && $aces > 0) {
+        $score -= 10;
+        $aces--;
+    }
+    
+    return $score;
 }
 
 $userId = $_SESSION['user_id'];
