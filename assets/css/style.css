@@ -1,19 +1,3 @@
-/* stati */
-.status-won { color: #4CAF50 !important; }
-.status-lost { color: #F44336 !important; }
-.status-push { color: #FFC107 !important; }
-.status-bust { color: #FF5722 !important; }
-.status-blackjack { color: #9C27B0 !important; }
-.status-playing { color: #2196F3 !important; }
-.status-stand { color: #FF9800 !important; }
-.status-waiting { color: #9E9E9E !important; }
-
-.player-turn {
-    border: 3px solid #FFD700 !important;
-    box-shadow: 0 0 15px #FFD700 !important;
-}
-
-
 /* =========================================
    1. VARIABILI & RESETS (THEME: 8-BIT)
    ========================================= */
@@ -36,29 +20,25 @@
 }
 
 body {
-    /* Font Pixelato per tutto il sito */
     font-family: 'Press Start 2P', cursive; 
-    
-    /* Sfondo a quadretti (Checkerboard) per effetto retrò */
     background-color: var(--bg-green);
     background-image: 
         linear-gradient(45deg, #004d00 25%, transparent 25%, transparent 75%, #004d00 75%, #004d00),
         linear-gradient(45deg, #004d00 25%, transparent 25%, transparent 75%, #004d00 75%, #004d00);
     background-size: 20px 20px;
     background-position: 0 0, 10px 10px;
-    
     color: var(--pixel-white);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    line-height: 1.5; /* Migliora leggibilità del font pixel */
+    line-height: 1.5;
 }
 
 a {
     color: var(--pixel-gold);
     text-decoration: none;
-    border-bottom: 2px dashed var(--pixel-gold); /* Sottolineatura tratteggiata */
+    border-bottom: 2px dashed var(--pixel-gold);
 }
 a:hover {
     background: var(--pixel-gold);
@@ -66,10 +46,74 @@ a:hover {
 }
 
 /* =========================================
-   2. UI COMPONENTI PIXELOSI
+   2. HEADER & LAYOUT (Modificato per allineamento)
    ========================================= */
 
-/* Il contenitore principale (sembra una finestra di dialogo RPG) */
+.game-header {
+    background: #222;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid gold;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.5);
+}
+
+/* Queste 3 classi dividono l'header in 3 parti uguali per centrare perfettamente il saldo */
+.header-left {
+    flex: 1;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Stile Box Saldo */
+.saldo-box {
+    background: black; 
+    padding: 8px 15px; 
+    border: 2px solid gold; 
+    border-radius: 5px; 
+    color: gold;
+    font-size: 0.8rem;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Stile Bottone ESCI */
+.btn-lobby {
+    background: var(--pixel-red);
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    font-size: 0.7rem;
+    border: 2px solid darkred;
+    box-shadow: 2px 2px 0px black;
+    font-family: 'Press Start 2P', cursive;
+}
+.btn-lobby:hover { 
+    top: 2px; 
+    box-shadow: none; 
+    position: relative;
+    background: #ff0000;
+}
+
+/* =========================================
+   3. UI COMPONENTI PIXELOSI
+   ========================================= */
+
 .login-container, .lobby-container {
     background: var(--pixel-black);
     border: 4px solid var(--pixel-white);
@@ -83,18 +127,17 @@ a:hover {
     position: relative;
 }
 
-/* Titoli */
 h1 {
     color: var(--pixel-gold);
-    font-size: 1.5rem; /* Il font pixel è grande di suo */
+    font-size: 1.5rem;
     margin-bottom: 30px;
     text-shadow: 4px 4px 0 #000;
     line-height: 1.8;
 }
 
-/* INPUT TEXT (Stile console) */
 input[type="text"], 
-input[type="password"] {
+input[type="password"],
+input[type="number"] {
     width: 100%;
     padding: 15px;
     margin-bottom: 20px;
@@ -104,14 +147,13 @@ input[type="password"] {
     font-size: 0.8rem;
     color: #000;
     outline: none;
-    box-shadow: inset 4px 4px 0px #ccc; /* Ombra interna */
+    box-shadow: inset 4px 4px 0px #ccc;
 }
 
 input:focus {
     background: #e0f7fa;
 }
 
-/* BOTTONI (Effetto pulsante Arcade) */
 button, .btn-join, .btn-gold-big, .btn-logout {
     font-family: 'Press Start 2P', cursive;
     cursor: pointer;
@@ -121,53 +163,20 @@ button, .btn-join, .btn-gold-big, .btn-logout {
     text-transform: uppercase;
     display: inline-block;
     position: relative;
-    box-shadow: var(--hard-shadow); /* Niente sfocatura! */
+    box-shadow: var(--hard-shadow);
     margin-top: 10px;
     width: 100%;
     text-align: center;
 }
 
-/* Colori specifici bottoni */
-button[type="submit"], .btn-gold-big {
-    background: var(--pixel-gold);
-    color: #000;
-}
-
-/* Effetto pressione bottone */
 button:active, .btn-join:active {
-    transform: translate(4px, 4px); /* Si sposta giù a destra */
-    box-shadow: none; /* L'ombra sparisce per sembrare premuto */
+    transform: translate(4px, 4px);
+    box-shadow: none;
 }
 
 /* =========================================
-   3. LOBBY & LISTE
+   4. LOBBY & LISTE
    ========================================= */
-
-.user-bar {
-    width: 100%;
-    background: var(--pixel-black);
-    border-bottom: 4px solid var(--pixel-white);
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.7rem;
-}
-
-.credits-box {
-    color: var(--pixel-gold);
-    border: 2px solid var(--pixel-gold);
-    padding: 5px 10px;
-    background: #000;
-}
-
-.btn-logout {
-    background: var(--pixel-red);
-    color: white;
-    width: auto;
-    font-size: 0.6rem;
-    padding: 10px;
-}
 
 .tables-list {
     margin-top: 20px;
@@ -202,139 +211,40 @@ button:active, .btn-join:active {
     border-bottom: none;
 }
 
-/* Scrollbar personalizzata pixelosa (Webkit) */
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: #000; }
 ::-webkit-scrollbar-thumb { background: var(--pixel-gold); border: 2px solid #000; }
 
 /* =========================================
-   4. TAVOLO DA GIOCO (GAMEPLAY)
+   5. TAVOLO DA GIOCO (GAMEPLAY)
    ========================================= */
 
-.game-table {
+.game-area {
     width: 95%;
     max-width: 1000px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 85vh;
+    min-height: 80vh;
     padding: 20px 0;
+    position: relative;
 }
 
 .dealer-area {
     background: rgba(0,0,0,0.5);
-    padding: 10px;
+    padding: 15px;
     border: 4px dashed rgba(255,255,255,0.2);
     text-align: center;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
-/* Griglia giocatori */
 .players-grid {
     display: flex;
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
     align-items: flex-end;
-}
-
-.player-seat {
-    background: var(--pixel-black);
-    padding: 10px;
-    border: 4px solid #fff;
-    min-width: 180px;
-    text-align: center;
-    position: relative;
-    box-shadow: var(--hard-shadow);
-}
-
-/* Evidenzia turno attivo */
-.active-turn {
-    border-color: var(--pixel-gold);
-    animation: blinkBorder 1s infinite;
-}
-
-@keyframes blinkBorder {
-    0% { border-color: var(--pixel-gold); }
-    50% { border-color: #fff; }
-    100% { border-color: var(--pixel-gold); }
-}
-
-/* CARTE PIXELOSE */
-.hand {
-    display: flex;
-    justify-content: center;
-    height: 90px;
-    margin: 15px 0;
-}
-
-.card {
-    width: 70px;
-    height: 95px;
-    border: 2px solid #000;
-    border-radius: 0; /* IMPORTANTE: Niente curve! */
-    margin-left: -30px;
-    box-shadow: 4px 4px 0 #000; /* Ombra dura */
-    
-    /* Se usi immagini, falle sembrare pixelose */
-    image-rendering: pixelated; 
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.6rem;
-    color: black;
-    font-weight: bold;
-}
-.card:first-child { margin-left: 0; }
-.card:hover { transform: translateY(-8px); }
-
-
-/* Barra Azioni */
-.actions-bar {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.btn-hit { background: var(--pixel-blue); color: white; width: auto; }
-.btn-stand { background: var(--pixel-red); color: white; width: auto; }
-
-/* Badge punteggi */
-.score-badge {
-    background: #000;
-    color: var(--pixel-gold);
-    padding: 5px;
-    border: 2px solid var(--pixel-white);
-    font-size: 0.6rem;
-    margin-top: 5px;
-    display: inline-block;
-}
-
-/* MULTIPLAYER STYLES */
-.my-player {
-    border: 3px solid #4CAF50 !important;
-    background: rgba(76, 175, 80, 0.1) !important;
-}
-
-.player-turn {
-    border: 3px solid #FFD700 !important;
-    box-shadow: 0 0 15px #FFD700 !important;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 5px #FFD700; }
-    50% { box-shadow: 0 0 20px #FFD700; }
-    100% { box-shadow: 0 0 5px #FFD700; }
-}
-
-.players-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
 }
 
 .player-box {
@@ -345,6 +255,7 @@ button:active, .btn-join:active {
     min-width: 200px;
     text-align: center;
     transition: all 0.3s;
+    box-shadow: var(--hard-shadow);
 }
 
 .player-box:hover {
@@ -352,18 +263,48 @@ button:active, .btn-join:active {
     box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
 }
 
-/* Status colors */
-.status-won { color: #4CAF50 !important; text-shadow: 0 0 10px #4CAF50; }
-.status-lost { color: #F44336 !important; }
-.status-push { color: #FFC107 !important; }
-.status-bust { color: #FF5722 !important; }
-.status-blackjack { color: #9C27B0 !important; text-shadow: 0 0 10px #9C27B0; }
-.status-playing { color: #2196F3 !important; }
-.status-stand { color: #FF9800 !important; }
-.status-waiting { color: #9E9E9E !important; }
+.player-seat { /* Vecchia classe, manteniamo compatibilità */
+    background: var(--pixel-black);
+    padding: 10px;
+    border: 4px solid #fff;
+    min-width: 180px;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--hard-shadow);
+}
 
-/* Betting area */
-#betting-area {
+/* CARTE */
+.hand {
+    display: flex;
+    justify-content: center;
+    height: 100px;
+    margin: 15px 0;
+}
+
+.card {
+    width: 70px;
+    height: 95px;
+    border: 2px solid #000;
+    margin-left: -30px;
+    box-shadow: 4px 4px 0 #000;
+    image-rendering: pixelated; 
+    background: white;
+}
+.card:first-child { margin-left: 0; }
+.card:hover { transform: translateY(-8px); z-index: 10; position: relative;}
+
+/* AZIONI & SCOMMESSA */
+.actions-bar {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-hit { background: var(--pixel-blue); color: white; width: auto; }
+.btn-stand { background: var(--pixel-red); color: white; width: auto; }
+
+.betting-panel { /* ex #betting-area */
     background: rgba(0, 0, 0, 0.95);
     padding: 25px;
     border: 3px solid gold;
@@ -374,6 +315,7 @@ button:active, .btn-join:active {
     transform: translate(-50%, -50%);
     z-index: 1000;
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    text-align: center;
 }
 
 #bet-amount {
@@ -393,47 +335,51 @@ button:active, .btn-join:active {
     color: black;
     border: none;
     padding: 12px 24px;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s;
+    font-family: inherit;
+    box-shadow: 2px 2px 0 black;
 }
-
 .btn-place-bet:hover {
-    background: linear-gradient(45deg, #FFA500, #FFD700);
     transform: scale(1.05);
 }
 
-.btn-place-bet:disabled {
-    background: #666;
-    cursor: not-allowed;
-    transform: none;
+/* =========================================
+   6. STATI & ANIMAZIONI (DAL TUO CODICE)
+   ========================================= */
+
+.status-won { color: #4CAF50 !important; text-shadow: 0 0 10px #4CAF50; }
+.status-lost { color: #F44336 !important; }
+.status-push { color: #FFC107 !important; }
+.status-bust { color: #FF5722 !important; }
+.status-blackjack { color: #9C27B0 !important; text-shadow: 0 0 10px #9C27B0; }
+.status-playing { color: #2196F3 !important; }
+.status-stand { color: #FF9800 !important; }
+.status-waiting { color: #9E9E9E !important; }
+
+/* Evidenzia turno attivo */
+.player-turn {
+    border: 3px solid #FFD700 !important;
+    box-shadow: 0 0 15px #FFD700 !important;
+    animation: pulse 1.5s infinite;
 }
 
-/* Nuovo stato per giocatore pronto */
-.status-ready {
-    color: #00BCD4 !important;
-    text-shadow: 0 0 5px #00BCD4;
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px #FFD700; }
+    50% { box-shadow: 0 0 20px #FFD700; }
+    100% { box-shadow: 0 0 5px #FFD700; }
 }
 
-/* Migliora la visibilità dell'area di scommessa */
-#betting-area {
-    transition: all 0.3s ease;
-}
-
-#betting-area.hidden {
-    display: none !important;
-    opacity: 0;
-    transform: scale(0.9);
-}
-
-/* Stile per il messaggio di attesa */
-#wait-message {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid gold;
-    margin-top: 10px;
-    font-size: 1.1rem;
+/* Score Badge */
+.score-badge {
+    background: #000;
+    color: var(--pixel-gold);
+    padding: 5px;
+    border: 2px solid var(--pixel-white);
+    font-size: 0.6rem;
+    margin-top: 5px;
+    display: inline-block;
 }

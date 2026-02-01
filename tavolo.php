@@ -17,15 +17,23 @@ $userId = $_SESSION['user_id'];
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    
-
 
     <div class="game-header">
-        <span>Tavolo #<?php echo $tableId; ?></span>
-        <div style="background:black; padding:5px 15px; border:2px solid gold; border-radius:5px; color:gold;">
-        SALDO: €<span id="user-credits-display">...</span>
-         </div>
-        <a href="lobby.php" class="btn-lobby">ESCI</a>
+        
+        <div class="header-left">
+            <span>Tavolo #<?php echo $tableId; ?></span>
+        </div>
+
+        <div class="header-center">
+            <div class="saldo-box">
+                SALDO: €<span id="user-credits-display">...</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a href="lobby.php" class="btn-lobby">ESCI</a>
+        </div>
+
     </div>
 
     <div class="game-area">
@@ -37,10 +45,10 @@ $userId = $_SESSION['user_id'];
 
         <div id="game-message" style="color:gold; font-size:1.2rem; margin: 20px 0; height: 30px;"></div>
 
-        <div id="betting-area" style="display:none; background:rgba(0,0,0,0.9); padding:20px; border:2px solid gold; z-index:100; position:absolute;">
+        <div id="betting-area" style="display:none;" class="betting-panel">
             <h2 style="color:gold; margin-bottom:15px;">PUNTA</h2>
             <input type="number" id="bet-amount" value="10" min="1" max="500">
-            <button id="btn-place-bet" class="btn-place-bet" style="background:gold; color:black;">GIOCA</button>
+            <button id="btn-place-bet" class="btn-place-bet">GIOCA</button>
             <div id="wait-message" style="display:none; color:yellow; font-size:0.7rem; margin-top:10px;">In attesa...</div>
         </div>
 
