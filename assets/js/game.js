@@ -319,8 +319,8 @@ async function fetchGameState(force = false) {
                 waitMessage.innerText = "Puntata fatta. Aspetta gli altri giocatori...";
             } else {
                 bettingArea.style.display = 'block';
+                casellaPuntata.style.display ='inline';
                 btnPlaceBet.style.display = 'inline-block';
-                gameMessage.innerText = 'Piazza la tua scommessa!';
             }
             
             renderPlayers(players, null);
