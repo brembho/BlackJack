@@ -40,6 +40,7 @@ $tavoli = $tm->getOpenTables();
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <link rel="icon" type="image/x-icon" href="assets/img/icona/Icona.ico">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <title>Lobby Blackjack</title>

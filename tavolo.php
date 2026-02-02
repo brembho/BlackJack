@@ -12,6 +12,7 @@ $userId = $_SESSION['user_id'];
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="assets/img/icona/Icona.ico">
     <title>BlackJack #<?php echo $tableId; ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
