@@ -46,10 +46,12 @@ $userId = $_SESSION['user_id'];
         <div id="game-message" style="color:gold; font-size:1.2rem; margin: 20px 0; height: 30px;"></div>
 
         <div id="betting-area" style="display:none;" class="betting-panel">
-            <h2 style="color:gold; margin-bottom:15px;">PUNTA</h2>
-            <input type="number" id="bet-amount" value="10" min="1" max="500">
+            <div id="casellaPuntata" style="display:inline">
+                <h2 style="color:gold; margin-bottom:15px;">PUNTA</h2>
+                <input type="number" id="bet-amount" value="10" min="1" max="">
+            </div>
             <button id="btn-place-bet" class="btn-place-bet">GIOCA</button>
-            <div id="wait-message" style="display:none; color:yellow; font-size:0.7rem; margin-top:10px;">In attesa...</div>
+            <div id="wait-message" style="display:none; color:yellow; font-size:1rem; margin-top:10px;">In attesa...</div>
         </div>
 
         <div id="players-area" class="players-grid"></div>

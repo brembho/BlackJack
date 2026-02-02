@@ -7,6 +7,7 @@ const actionBar = document.getElementById('action-bar');
 const gameMessage = document.getElementById('game-message');
 const waitMessage = document.getElementById('wait-message');
 const btnPlaceBet = document.getElementById('btn-place-bet');
+const casellaPuntata = document.getElementById('casellaPuntata');
 const btnHit = document.querySelector('.btn-hit');
 const btnStand = document.querySelector('.btn-stand');
 
@@ -312,10 +313,10 @@ async function fetchGameState(force = false) {
             // Se ho già scommesso, mostro solo messaggio di attesa
             if (me && me.bet > 0) {
                 bettingArea.style.display = 'block';
+                casellaPuntata.style.display ='none';
                 btnPlaceBet.style.display = 'none';
                 waitMessage.style.display = 'block';
                 waitMessage.innerText = "Puntata fatta. Aspetta gli altri giocatori...";
-                gameMessage.innerText = "Aspetta che tutti scommettano...";
             } else {
                 bettingArea.style.display = 'block';
                 btnPlaceBet.style.display = 'inline-block';
