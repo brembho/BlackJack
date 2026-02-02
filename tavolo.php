@@ -45,6 +45,11 @@ $userId = $_SESSION['user_id'];
 
         <div id="game-message" style="color:gold; font-size:1.2rem; margin: 20px 0; height: 30px;"></div>
 
+        <div id="restart-timer-container" style="display:none; margin: 10px 0;">
+            <span style="color: white; font-size: 0.9rem;">Prossimo turno in: </span>
+            <span id="timer-seconds" style="color: #ff4757; font-size: 1.5rem; font-weight: bold;">5</span>
+        </div>
+
         <div id="betting-area" style="display:none;" class="betting-panel">
             <div id="casellaPuntata" style="display:inline">
                 <h2 style="color:gold; margin-bottom:15px;">PUNTA</h2>

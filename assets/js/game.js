@@ -346,40 +346,70 @@ async function fetchGameState(force = false) {
                 }
             }
         }
-        else if (table.status === 'finished') {
-            bettingArea.style.display = 'none';
-            waitMessage.style.display = 'none';
-            actionBar.style.display = 'none';
-            
-            renderDealer(table);
-            renderPlayers(players, null);
-            
-            // Mostra risultati
-            if (me) {
-                switch(me.status) {
-                    case 'won': gameMessage.innerText = "HAI VINTO!"; break;
-                    case 'lost': gameMessage.innerText = "Hai perso."; break;
-                    case 'push': gameMessage.innerText = "Pareggio."; break;
-                    case 'blackjack': gameMessage.innerText = "BLACKJACK! VINTO!"; break;
-                    default: gameMessage.innerText = "Mano terminata.";
-                }
-            }
-            
-            // Reset automatico dopo 5 secondi
-            setTimeout(async () => {
-                if (currentGameState && currentGameState.table.status === 'finished') {
-                    try {
-                        await fetch('api/reset_round.php', {
-                            method: 'POST', 
-                            body: new URLSearchParams({ 'table_id': currentTableId })
-                        });
-                        setTimeout(() => fetchGameState(true), 1000);
-                    } catch (e) {
-                        console.error("Errore reset:", e);
-                    }
-                }
-            }, 5000);
+        // ... dentro fetchGameState ...
+else if (table.status === 'finished') {
+    bettingArea.style.display = 'none';
+    waitMessage.style.display = 'none';
+    actionBar.style.display = 'none';
+    
+    renderDealer(table);
+    renderPlayers(players, null);
+    
+    // Mostra risultati
+    if (me) {
+        switch(me.status) {
+            case 'won': gameMessage.innerText = "HAI VINTO!"; break;
+            case 'lost': gameMessage.innerText = "Hai perso."; break;
+            case 'push': gameMessage.innerText = "Pareggio."; break;
+            case 'blackjack': gameMessage.innerText = "BLACKJACK! VINTO!"; break;
+            default: gameMessage.innerText = "Mano terminata.";
         }
+    }
+
+    // --- NUOVA LOGICA TIMER ---
+    const timerContainer = document.getElementById('restart-timer-container');
+    const timerDisplay = document.getElementById('timer-seconds');
+    
+    // Mostriamo il timer solo se non è già visibile (per evitare di resettare il countdown continuamente)
+    if (timerContainer.style.display === 'none') {
+        timerContainer.style.display = 'block';
+        let secondsLeft = 5;
+        timerDisplay.innerText = secondsLeft;
+
+        const countdownInterval = setInterval(() => {
+            secondsLeft--;
+            if (secondsLeft >= 0) {
+                timerDisplay.innerText = secondsLeft;
+            }
+            if (secondsLeft <= 0) {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
+
+        // Reset automatico dopo 5 secondi
+        setTimeout(async () => {
+            if (currentGameState && currentGameState.table.status === 'finished') {
+                try {
+                    await fetch('api/reset_round.php', {
+                        method: 'POST', 
+                        body: new URLSearchParams({ 'table_id': currentTableId })
+                    });
+                    // Nascondi il timer dopo il reset
+                    timerContainer.style.display = 'none';
+                    setTimeout(() => fetchGameState(true), 1000);
+                } catch (e) {
+                    console.error("Errore reset:", e);
+                    timerContainer.style.display = 'none';
+                }
+            } else {
+                timerContainer.style.display = 'none';
+            }
+        }, 5000);
+    }
+} else {
+    // Se lo stato non è 'finished', assicuriamoci che il timer sia nascosto
+    document.getElementById('restart-timer-container').style.display = 'none';
+}
         
     } catch(e) { 
         console.error("Errore fetch:", e);
