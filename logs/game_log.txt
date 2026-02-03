@@ -1,9 +1,0 @@
-[2026-01-26 09:11:48] [USER:GUEST] -> Nuovo utente registrato: re
-[2026-01-26 09:17:37] [USER:GUEST] -> Nuovo utente registrato: 123
-[2026-01-28 09:29:56] [USER:GUEST] -> Nuovo utente registrato: 1234
-[2026-02-02 09:08:39] [USER:GUEST] -> Nuovo utente registrato: re
-[2026-02-02 09:09:19] [USER:GUEST] -> Nuovo utente registrato: 123
-[2026-02-02 09:27:34] [USER:GUEST] -> Nuovo utente registrato: Xue
-[2026-02-02 09:28:24] [USER:GUEST] -> Nuovo utente registrato: PietroGali
-[2026-02-02 09:29:12] [USER:GUEST] -> Nuovo utente registrato: stronzoNegro
-[2026-02-02 09:29:46] [USER:GUEST] -> Nuovo utente registrato: thomas_turbato

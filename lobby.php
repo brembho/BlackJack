@@ -46,7 +46,7 @@ $tavoli = $tm->getOpenTables();
     <title>Lobby Blackjack</title>
 </head>
 <body>
-    <div class="login-container" style="max-width: 600px;">
+    <div class="login-container" style="max-width: 700px;">
         <h1>Lobby di Gioco</h1>
         <p>Benvenuto, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
         <p>Crediti: <?php echo $_SESSION['credits']; ?> €</p>
@@ -65,7 +65,7 @@ $tavoli = $tm->getOpenTables();
                     <li style="background: rgba(255,255,255,0.1); margin: 10px 0; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
                         <span>
                             Tavolo #<?php echo $tavolo['id']; ?> 
-                            (Giocatori: <?php echo $tavolo['num_players']; ?>)
+                              -  (Giocatori: <?php echo $tavolo['num_players']; ?>)
                         </span>
                         
                         <?php if ($tavolo['status'] == 'waiting' || $tavolo['status'] == 'betting'): ?>

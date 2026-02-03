@@ -68,7 +68,7 @@ if (isset($_POST['register_btn'])) {
 <body>
 
     <div class="login-container">
-        <div style="font-size: 3rem; margin-bottom: 10px;">♦️</div>
+        <div margin-bottom: 10px;"><img src="assets/img/icona/Icona.ico" alt=""></div>
         
         <h1>Crea Account</h1>
 
@@ -80,12 +80,12 @@ if (isset($_POST['register_btn'])) {
 
         <form method="POST" action="">
             <div style="text-align: left; margin-bottom: 5px; color: #ffc107; font-weight: bold;">Scegli Username</div>
-            <input type="text" name="username" placeholder="Es. MarioRossi" required autocomplete="off">
+            <input type="text" name="username" placeholder="username" required autocomplete="off">
 
             <div style="text-align: left; margin-bottom: 5px; color: #ffc107; font-weight: bold;">Scegli Password</div>
-            <input type="password" name="password" placeholder="Minimo 4 caratteri" required>
+            <input type="password" name="password" placeholder="password" required>
 
-            <button type="submit" name="register_btn">REGISTRATI ORA</button>
+            <button style="background-color: #ff4f24;" type="submit" name="register_btn">REGISTRATI ORA</button>
         </form>
         
         <p style="margin-top: 20px;">

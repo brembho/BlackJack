@@ -50,7 +50,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             <label>Password:</label><br>
             <input type="password" name="password" required><br><br>
 
-            <button type="submit">Avanti</button>
+            <button style="background-color: #34A853;" type="submit">Avanti</button>
         </form>
         
         <p style="margin-top: 20px;">Non hai un account? <a href="register.php">Registrati qui</a></p>
