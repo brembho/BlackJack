@@ -284,11 +284,9 @@ button:active, .btn-join:active {
 .card {
     width: 70px;
     height: 95px;
-    border: 2px solid #000;
     margin-left: -30px;
     box-shadow: 4px 4px 0 #000;
     image-rendering: pixelated; 
-    background: white;
 }
 .card:first-child { margin-left: 0; }
 .card:hover { transform: translateY(-8px); z-index: 10; position: relative;}

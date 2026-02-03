@@ -44,12 +44,7 @@ $userId = $_SESSION['user_id'];
             <div id="dealer-cards" class="hand"></div>
         </div>
 
-        <div id="game-message" style="color:gold; font-size:1.2rem; margin: 20px 0; height: 30px;"></div>
-
-        <div id="restart-timer-container" style="display:none; margin: 10px 0;">
-            <span style="color: white; font-size: 0.9rem;">Prossimo turno in: </span>
-            <span id="timer-seconds" style="color: #ff4757; font-size: 1.5rem; font-weight: bold;">5</span>
-        </div>
+        <div id="game-message" style="color:gold; font-size:1.2rem; display:flex; justify-content: center; align-items:center; margin: 20px 0; height: 30px;"></div>
 
         <div id="betting-area" style="display:none;" class="betting-panel">
             <div id="casellaPuntata" style="display:inline">
@@ -63,9 +58,13 @@ $userId = $_SESSION['user_id'];
         <div id="players-area" class="players-grid"></div>
 
         <div id="action-bar" class="actions-bar" style="display:none;">
-            <p style="color:gold; width:100%; text-align:center; margin-bottom:10px;">TOCCA A TE!</p>
             <button class="btn-hit">CARTA</button>
             <button class="btn-stand">STO</button>
+        </div>
+
+        <div id="restart-timer-container" style="display:none; justify-content: center; align-items:center; margin: 10px 0;">
+            <span style="color: white; display:flex; justify-content: center; align-items:center; font-size: 0.9rem;">Prossimo turno in: </span>
+            <span id="timer-seconds" style="color: #ff4757; margin-top: 5px; display:flex; justify-content: center; align-items:center; font-size: 1.5rem; font-weight: bold;">5</span>
         </div>
     </div>
 

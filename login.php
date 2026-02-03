@@ -53,7 +53,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
             <button type="submit">Avanti</button>
         </form>
         
-        <p>Non hai un account? <a href="register.php">Regustrati qui</a></p>
+        <p style="margin-top: 20px;">Non hai un account? <a href="register.php">Registrati qui</a></p>
     </div>
     
 </body>

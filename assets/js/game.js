@@ -131,7 +131,7 @@ function renderDealer(table) {
             // Mostra solo la prima carta durante il gioco
             const visibleHand = [table.dealer_hand[0]];
             dealerScore = calculateHandScore(visibleHand);
-            scoreText = `Punti: ${dealerScore} (+ ?)`;
+            scoreText = `Punti: ${dealerScore} + (?)`;
             
             // Carta scoperta
             const img1 = document.createElement('img');
